@@ -145,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Buenas Tardes, ${buscarNombreUsuario(username)}',
+                'Buenas Tardess, ${buscarNombreUsuario(username)}',
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
