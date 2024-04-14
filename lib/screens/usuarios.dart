@@ -1,3 +1,5 @@
+import 'package:educame/screens/nalumno.dart';
+import 'package:educame/screens/nmaestro.dart';
 import 'package:flutter/material.dart';
 
 class UsuariosScreen extends StatefulWidget {
@@ -17,6 +19,8 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
     Alumno(
         nombre: 'María Becerra Gutierrez', seccion: 'Secundaria', grado: '11'),
     Alumno(nombre: 'Pedro Montes Garrido', seccion: 'Primaria', grado: '12'),
+    Alumno(nombre: 'Pedro Montes Garrido', seccion: 'Primaria', grado: '12'),
+    Alumno(nombre: 'Pedro Montes Garrido', seccion: 'Primaria', grado: '12'),
   ];
 
   List<Maestro> _maestro = [
@@ -31,27 +35,24 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.0),
-        child: Container(
+      appBar: AppBar(
+        //backgroundColor: Colors.blue,
+        flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [Color.fromARGB(255, 28, 100, 163), Color(0xFF181F4B)],
-              begin: Alignment.topLeft,
+              begin: Alignment.centerLeft,
               end: Alignment.centerRight,
             ),
           ),
-          child: AppBar(
-            automaticallyImplyLeading: false,
-            title: Center(
-              child: Text(
-                'Usuarios',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            backgroundColor: Colors.transparent,
+        ),
+        title: Center(
+          child: Text(
+            'Usuarios',
+            style: TextStyle(color: Colors.white),
           ),
         ),
+        automaticallyImplyLeading: false,
       ),
       body: Container(
         color: Color(0xFFE5E5E5),
@@ -144,7 +145,21 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(
                                 Color(0xFFB80000))),
-                        onPressed: () {},
+                        onPressed: () {
+                          if (_selectedMenu == 'Alumnos') {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => nAlumno()),
+                            );
+                          } else if (_selectedMenu == 'Maestros') {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => nMaestro()),
+                            );
+                          }
+                        },
                         child: Text(
                           'Agregar ${_selectedMenu == 'Alumnos' ? 'Alumno' : 'Maestro'}',
                           style: TextStyle(color: Colors.white),
@@ -289,14 +304,17 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                 decoration: InputDecoration(
                   fillColor: Colors.white,
                   filled: true,
-                    hintText: 'Buscar alumno', hintStyle: TextStyle(color: Colors.grey),
+                  hintText: 'Buscar alumno',
+                  hintStyle: TextStyle(color: Colors.grey),
                   suffixIcon: Icon(Icons.search, color: Colors.grey),
-                   border: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.black, // Cambia el color del borde según sea necesario
-                    width: 2.0, // Cambia el grosor del borde según sea necesario
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors
+                          .black, // Cambia el color del borde según sea necesario
+                      width:
+                          2.0, // Cambia el grosor del borde según sea necesario
+                    ),
                   ),
-                ),
                 ),
               ),
             ),

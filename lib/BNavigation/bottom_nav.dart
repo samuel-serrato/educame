@@ -14,7 +14,6 @@ class BNavigator extends StatefulWidget {
   _BNavigatorState createState() => _BNavigatorState();
 }
 
-
 class _BNavigatorState extends State<BNavigator> {
   late int index;
   bool isDesktop = false;
@@ -42,35 +41,35 @@ class _BNavigatorState extends State<BNavigator> {
           }
         },
         // Destinos del NavigationRail...
-         destinations: const <NavigationRailDestination>[
-                    NavigationRailDestination(
-                      icon: Icon(
-                        Icons.home,
-                        color: Colors.white,
-                      ),
-                      label: Text('Inicio',
-                          style: TextStyle(color: Colors.white, fontSize: 16)),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.library_books, color: Colors.white),
-                      label: Text('Usuarios',
-                          style: TextStyle(color: Colors.white, fontSize: 16)),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.groups, color: Colors.white),
-                      label: Text('Grupos',
-                          style: TextStyle(color: Colors.white, fontSize: 16)),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.person, color: Colors.white),
-                      label: Text('Personas',
-                          style: TextStyle(color: Colors.white, fontSize: 16)),
-                    ),
-                  ],
+        destinations: const <NavigationRailDestination>[
+          NavigationRailDestination(
+            icon: Icon(
+              Icons.home,
+              color: Colors.white,
+            ),
+            label: Text('Inicio',
+                style: TextStyle(color: Colors.white, fontSize: 16)),
+          ),
+          NavigationRailDestination(
+            icon: Icon(Icons.library_books, color: Colors.white),
+            label: Text('Usuarios',
+                style: TextStyle(color: Colors.white, fontSize: 16)),
+          ),
+          NavigationRailDestination(
+            icon: Icon(Icons.groups, color: Colors.white),
+            label: Text('Comunicación',
+                style: TextStyle(color: Colors.white, fontSize: 16)),
+          ),
+          NavigationRailDestination(
+            icon: Icon(Icons.person, color: Colors.white),
+            label: Text('Perfil',
+                style: TextStyle(color: Colors.white, fontSize: 16)),
+          ),
+        ],
       );
     } else {
       return BottomNavigationBar(
-         type: BottomNavigationBarType.fixed,
+        type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
         selectedItemColor: Color(0xFF001D82),
         unselectedItemColor: Colors.black,
@@ -84,7 +83,7 @@ class _BNavigatorState extends State<BNavigator> {
           }
         },
         // Ítems del BottomNavigationBar...
-          items: const <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Inicio',
@@ -94,16 +93,15 @@ class _BNavigatorState extends State<BNavigator> {
             label: 'Usuarios',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.groups),
-            label: 'Grupos',
+            icon: Icon(Icons.message),
+            label: 'Comunicación',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Personas',
+            label: 'Perfil',
           ),
         ],
       );
     }
   }
 }
-

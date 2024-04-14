@@ -19,11 +19,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: LoginScreen(),
-      localizationsDelegates: const[
+      localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
-       supportedLocales: const[
+      supportedLocales: const [
         const Locale('es'),
       ],
       // locale: const Locale('es'), // Establecer el idioma en español (opcional)
@@ -92,17 +92,17 @@ class _HomePageState extends State<HomePage> {
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.library_books, color: Colors.white),
-                      label: Text('Préstamos',
+                      label: Text('Usuarios',
                           style: TextStyle(color: Colors.white, fontSize: 16)),
                     ),
                     NavigationRailDestination(
-                      icon: Icon(Icons.groups, color: Colors.white),
-                      label: Text('Grupos',
+                      icon: Icon(Icons.message, color: Colors.white),
+                      label: Text('Comunicación',
                           style: TextStyle(color: Colors.white, fontSize: 16)),
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.person, color: Colors.white),
-                      label: Text('Personas',
+                      label: Text('Perfil',
                           style: TextStyle(color: Colors.white, fontSize: 16)),
                     ),
                   ],
@@ -117,5 +117,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-

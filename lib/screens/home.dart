@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:educame/screens/nalumno.dart';
 import 'package:flutter/material.dart';
 //import 'package:educame/screens/miCuenta.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
@@ -145,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Buenas Tardess, ${buscarNombreUsuario(username)}',
+                'Buenas Tardes, ${buscarNombreUsuario(username)}',
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -367,15 +368,14 @@ class _HomeScreenState extends State<HomeScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 16),
           SizedBox(
             height: 80,
             child: ElevatedButton(
               onPressed: () {
-                /* Navigator.of(context).push(MaterialPageRoute<void>(
-                  builder: (BuildContext context) {
-                return const NExpScreen();
-              })); */
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => nAlumno()),
+                );
               },
               style: ElevatedButton.styleFrom(
                 surfaceTintColor: Colors.white,
@@ -398,8 +398,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 50,
                       child: const SizedBox(
                         child: Center(
-                          child: Icon(Icons.person_add, size: 40, color: Color.fromARGB(255, 14, 47, 117))
-                        ),
+                            child: Icon(Icons.person_add,
+                                size: 40,
+                                color: Color.fromARGB(255, 14, 47, 117))),
                       ),
                     ),
                     const SizedBox(width: 30),
@@ -415,6 +416,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
+
           const SizedBox(height: 20), // Añadir espacio entre los botones
           // Segundo botón
           SizedBox(
@@ -442,8 +444,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 50,
                       child: const SizedBox(
                         child: Center(
-                          child: Icon(Icons.co_present_rounded, size: 40, color: Color.fromARGB(255, 14, 47, 117))
-                        ),
+                            child: Icon(Icons.co_present_rounded,
+                                size: 40,
+                                color: Color.fromARGB(255, 14, 47, 117))),
                       ),
                     ),
                     const SizedBox(width: 30),
@@ -486,8 +489,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 50,
                       child: const SizedBox(
                         child: Center(
-                          child: Icon(Icons.message, size: 40, color: Color.fromARGB(255, 14, 47, 117))
-                        ),
+                            child: Icon(Icons.message,
+                                size: 40,
+                                color: Color.fromARGB(255, 14, 47, 117))),
                       ),
                     ),
                     const SizedBox(width: 30),
@@ -514,7 +518,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     try {
       final response =
-          await http.get(Uri.parse('http://192.168.1.190/API_MF/api/usuarios'));
+          await http.get(Uri.parse('https://localhost:44364/api/usuarios'));
       if (response.statusCode == 200) {
         final parsedJson = json.decode(response.body);
 

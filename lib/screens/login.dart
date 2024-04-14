@@ -90,8 +90,8 @@ class _LoginScreenState extends State<LoginScreen> {
     final String username = _usernameController.text;
     final String password = _passwordController.text;
 
-    //final url = Uri.parse('https://localhost:44305/api/usuarios');
-    final url = Uri.parse('http://192.168.1.190/API_MF/api/usuarios');
+    final url = Uri.parse('https://localhost:44364/api/usuarios');
+    //final url = Uri.parse('http://192.168.1.190/API_MF/api/usuarios');
 
     try {
       setState(() {
@@ -147,4 +147,36 @@ class _LoginScreenState extends State<LoginScreen> {
       });
     }
   }
+  /* Future<void> _LoginScreen() async {
+    final String username = _usernameController.text;
+    final String password = _passwordController.text;
+
+    // Verificar si el usuario y la contraseña son '1'
+    if (username == '1' && password == '1') {
+      // Credenciales válidas, realizar la acción deseada (navegar a una nueva pantalla, etc.)
+      await Future.delayed(
+          Duration(seconds: 1)); // Agrega un retraso de 1 segundo
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(username: username),
+        ),
+      );
+      setState(() {
+        _errorMessage = 'Correcto';
+      });
+    } else {
+      // Si no coinciden las credenciales
+      await Future.delayed(
+          Duration(seconds: 1)); // Agrega un retraso de 1 segundo
+      setState(() {
+        _errorMessage = 'Credenciales incorrectas';
+      });
+    }
+
+    // Cambia el estado a "no cargando"
+    setState(() {
+      _isLoading = false;
+    });
+  } */
 }
