@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:educame/screens/nalumno.dart';
 import 'package:educame/screens/nmaestro.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class UsuariosScreen extends StatefulWidget {
   final String username;
@@ -14,14 +17,9 @@ class UsuariosScreen extends StatefulWidget {
 class _UsuariosScreenState extends State<UsuariosScreen> {
   String _selectedMenu = 'Alumnos';
 
-  List<Alumno> _alumno = [
-    Alumno(nombre: 'Juan Hernandez Benitez', seccion: 'Primaria', grado: '10'),
-    Alumno(
-        nombre: 'María Becerra Gutierrez', seccion: 'Secundaria', grado: '11'),
-    Alumno(nombre: 'Pedro Montes Garrido', seccion: 'Primaria', grado: '12'),
-    Alumno(nombre: 'Pedro Montes Garrido', seccion: 'Primaria', grado: '12'),
-    Alumno(nombre: 'Pedro Montes Garrido', seccion: 'Primaria', grado: '12'),
-  ];
+  //List<Alumno> _alumno = [];
+
+  List<Usuario> _usuarios = []; // Lista vacía inicialmente
 
   List<Maestro> _maestro = [
     Maestro(
@@ -31,6 +29,73 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
     Maestro(nombre: 'Maestro 2', seccion: 'B'),
     Maestro(nombre: 'Maestro 3', seccion: 'C'),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAlumnos();
+  }
+
+  Future<void> _fetchAlumnos() async {
+    try {
+      final response =
+          await http.get(Uri.parse('https://localhost:44364/api/alumnos'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          _usuarios = data
+              .map((item) => Usuario(
+                    nombre: item['NOMBRE'],
+                    apellidop: item['APELLIDO_PATERNO'],
+                    apellidom: item['APELLIDO_MATERNO'],
+                    seccion: item['SECCION'],
+                    grado: item['GRADO'],
+                  ))
+              .toList();
+        });
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('Error: $error');
+      // Manejar el error como prefieras, por ejemplo, mostrar un mensaje al usuario
+    }
+  }
+
+  void _mostrarInformacionUsuario(BuildContext context, Usuario usuario) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.7,
+          maxChildSize: 0.9,
+          minChildSize: 0.5,
+          expand: true,
+          builder: (context, scrollController) {
+            return Container(
+              padding: EdgeInsets.all(20.0),
+              child: ListView(
+                controller: scrollController,
+                children: [
+                  Text(
+                    'Información del Usuario',
+                    style:
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 20.0),
+                  Text(
+                      'Nombre: ${usuario.nombre} ${usuario.apellidop} ${usuario.apellidom}'),
+                  Text('Sección: ${usuario.seccion}'),
+                  Text('Grado: ${usuario.grado}'),
+                  // Agrega aquí más información del usuario si es necesario
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,11 +212,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                                 Color(0xFFB80000))),
                         onPressed: () {
                           if (_selectedMenu == 'Alumnos') {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => nAlumno()),
-                            );
+                            _mostrarformAlumno(context);
                           } else if (_selectedMenu == 'Maestros') {
                             Navigator.push(
                               context,
@@ -198,42 +259,20 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: ListView.builder(
-                        itemCount: _alumno.length,
+                        itemCount: _usuarios.length,
                         itemBuilder: (context, index) {
-                          return Container(
-                            margin: EdgeInsets.symmetric(vertical: 5),
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(10),
+                          return ListTile(
+                            onTap: () => _mostrarInformacionUsuario(
+                                context, _usuarios[index]),
+                            title: Text(
+                              '${_usuarios[index].nombre} ${_usuarios[index].apellidop} ${_usuarios[index].apellidom}',
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            child: Row(
+                            subtitle: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '${_alumno[index].nombre}',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                              'Sección: ${_alumno[index].seccion}'),
-                                          Text(
-                                              'Grado: ${_alumno[index].grado}'),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                Text('Sección: ${_usuarios[index].seccion}'),
+                                Text('Grado: ${_usuarios[index].grado}'),
                               ],
                             ),
                           );
@@ -323,6 +362,23 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
       ),
     );
   }
+
+  void _mostrarformAlumno(BuildContext context) async {
+    final result = await Navigator.push<bool>(
+      context,
+      PageRouteBuilder(
+        transitionDuration:
+            Duration.zero, // Establece la duración de transición como cero
+        pageBuilder: (context, animation, secondaryAnimation) => nAlumno(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            child, // Establece una transición nula
+      ),
+    );
+
+    if (result == true) {
+      _fetchAlumnos();
+    }
+  }
 }
 
 class FilterPill extends StatelessWidget {
@@ -347,6 +403,41 @@ class FilterPill extends StatelessWidget {
       ),
     );
   }
+
+  void _mostrarInformacionUsuario(BuildContext context, Usuario usuario) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.7,
+          maxChildSize: 0.9,
+          minChildSize: 0.5,
+          expand: true,
+          builder: (context, scrollController) {
+            return Container(
+              padding: EdgeInsets.all(20.0),
+              child: ListView(
+                controller: scrollController,
+                children: [
+                  Text(
+                    'Información del Usuario',
+                    style:
+                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 20.0),
+                  Text(
+                      'Nombre: ${usuario.nombre} ${usuario.apellidop} ${usuario.apellidom}'),
+                  Text('Sección: ${usuario.seccion}'),
+                  Text('Grado: ${usuario.grado}'),
+                  // Agrega aquí más información del usuario si es necesario
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 }
 
 void main() {
@@ -355,12 +446,20 @@ void main() {
   ));
 }
 
-class Alumno {
+class Usuario {
   final String nombre;
+  final String apellidop;
+  final String apellidom;
   final String seccion;
   final String grado;
 
-  Alumno({required this.nombre, required this.seccion, required this.grado});
+  Usuario({
+    required this.nombre,
+    required this.apellidop,
+    required this.apellidom,
+    required this.seccion,
+    required this.grado,
+  });
 }
 
 class Maestro {

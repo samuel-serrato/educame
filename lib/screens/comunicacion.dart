@@ -44,6 +44,37 @@ class _ComunicacionScreenState extends State<ComunicacionScreen> {
     ),
   ];
 
+  List<Citas> _citas = [
+    Citas(
+      tipo: 'Personal',
+      descripcion: 'Acordar pago',
+      autor: 'Coordinación',
+      destinatario: 'Daniel',
+      fechaCreacion: '10/04/2024',
+    ),
+    Citas(
+      tipo: 'Personal',
+      descripcion: 'Malas calificaciones',
+      autor: 'Emiliano Cruz',
+      destinatario: 'Alumnos',
+      fechaCreacion: '08/04/2024',
+    ),
+    Citas(
+      tipo: 'Personal',
+      descripcion: 'Acordar pago',
+      autor: 'Coordinación',
+      destinatario: 'Daniel',
+      fechaCreacion: '10/04/2024',
+    ),
+    Citas(
+      tipo: 'Personal',
+      descripcion: 'Malas calificaciones',
+      autor: 'Emiliano Cruz',
+      destinatario: 'Alumnos',
+      fechaCreacion: '08/04/2024',
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -257,7 +288,83 @@ class _ComunicacionScreenState extends State<ComunicacionScreen> {
                       ),
                     ),
                   )
-                : SizedBox(), // Espacio vacío si no está seleccionado Avisos
+                //ESTÁ SELECCIONADO CITAS
+                : Expanded(
+                    child: Container(
+                      margin: EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: SingleChildScrollView(
+                        child: DataTable(
+                          columnSpacing: 10,
+                          dataRowMaxHeight: 100,
+                          dataRowMinHeight: 50,
+                          horizontalMargin: 20,
+                          columns: [
+                            DataColumn(
+                                label: SizedBox(
+                              width: screenWidth * 0.1,
+                              child: Text(
+                                'Tipo',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            )),
+                            DataColumn(
+                                label: SizedBox(
+                              width: screenWidth * 0.18,
+                              child: Text(
+                                'Detalles',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            )),
+                            DataColumn(
+                                label: SizedBox(
+                              width: screenWidth * 0.1,
+                              child: Text(
+                                'Autor',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            )),
+                            DataColumn(
+                                label: SizedBox(
+                              width: screenWidth * 0.15,
+                              child: Text(
+                                'Receptor',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            )),
+                            DataColumn(
+                                label: SizedBox(
+                              width: screenWidth * 0.15,
+                              child: Text(
+                                'Fecha',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            )),
+                          ],
+                          rows: _citas
+                              .map(
+                                (citas) => DataRow(cells: [
+                                  DataCell(Text(citas.tipo,
+                                      style: TextStyle(fontSize: 10))),
+                                  DataCell(Text(citas.descripcion,
+                                      style: TextStyle(fontSize: 10))),
+                                  DataCell(Text(citas.autor,
+                                      style: TextStyle(fontSize: 10))),
+                                  DataCell(Text(citas.destinatario,
+                                      style: TextStyle(fontSize: 10))),
+                                  DataCell(Text(citas.fechaCreacion,
+                                      style: TextStyle(fontSize: 10))),
+                                ]),
+                              )
+                              .toList(),
+                        ),
+                      ),
+                    ),
+                  ), // Espacio vacío si no está seleccionado Avisos
+            // Botones Inferiores
             // Botones Inferiores
             Container(
               margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -265,48 +372,71 @@ class _ComunicacionScreenState extends State<ComunicacionScreen> {
               padding: EdgeInsets.symmetric(vertical: 0.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 5, vertical: 10.0),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                          Color(0xFFB80000),
+                children: _selectedMenu == 'Avisos'
+                    ? [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 10.0),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                Color(0xFFB80000),
+                              ),
+                            ),
+                            onPressed: () {},
+                            child: Text(
+                              'Nuevo Aviso General',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                      onPressed: () {},
-                      child: Text(
-                        'Nuevo Aviso General',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 11,
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 10.0),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                Color(0xFFB80000),
+                              ),
+                            ),
+                            onPressed: () {},
+                            child: Text(
+                              'Nuevo Aviso Personal',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 5, vertical: 10.0),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                          Color(0xFFB80000),
+                      ]
+                    : [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 10.0),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                Color(0xFFB80000),
+                              ),
+                            ),
+                            onPressed: () {},
+                            child: Text(
+                              'Nueva Cita',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                      onPressed: () {},
-                      child: Text(
-                        'Nuevo Aviso Personal',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 11,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                      ],
               ),
             ),
+
             // Barra de búsqueda
             Container(
               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
@@ -348,6 +478,22 @@ class Aviso {
   final String fechaCreacion;
 
   Aviso({
+    required this.tipo,
+    required this.descripcion,
+    required this.autor,
+    required this.destinatario,
+    required this.fechaCreacion,
+  });
+}
+
+class Citas {
+  final String tipo;
+  final String descripcion;
+  final String autor;
+  final String destinatario;
+  final String fechaCreacion;
+
+  Citas({
     required this.tipo,
     required this.descripcion,
     required this.autor,
