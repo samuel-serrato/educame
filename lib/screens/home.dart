@@ -17,8 +17,8 @@ import 'package:intl/date_symbol_data_local.dart'; // Importa este paquete para 
 class HomeScreen extends StatefulWidget {
   //String user;
 
-  final String username; // Agregar esta línea
-  const HomeScreen({super.key, required this.username});
+  final int userId; // Agregar esta línea
+  const HomeScreen({super.key, required this.userId});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -27,35 +27,60 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final int _selectedIndex = 0;
 
-  String username = '';
-//  String nombre = '';
+  String nombreUsuario = ''; // Variable para almacenar el nombre del usuario
   List<Usuario> listausuarios = [];
   bool isLoading = true;
   bool showErrorDialog = false;
-
-  /*  Future<String> _getUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      //user = prefs.getString('user') ?? '';
-      user = prefs.getString('user') ?? '';
-    });
-    return user;
-  } */
 
   @override
   void initState() {
     super.initState();
     obtenerusuarios();
-    username = widget.username;
+    obtenerNombreUsuario(); // Llama a la función para obtener el nombre del usuario
+    //userId = widget.userId;
   }
 
-  String buscarNombreUsuario(String usuario) {
-    for (Usuario usuarioObjeto in listausuarios) {
-      if (usuarioObjeto.user == usuario) {
-        return usuarioObjeto.nombre;
+  void obtenerNombreUsuario() async {
+    final url = Uri.parse('https://localhost:44364/api/coordinacion');
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> coordinaciones = jsonDecode(response.body);
+
+        for (final coordinacion in coordinaciones) {
+          final int idUsuario = coordinacion['ID_USUARIO'];
+          final String nombre = coordinacion['NOMBRE'];
+
+          if (idUsuario == widget.userId) {
+            setState(() {
+              nombreUsuario = nombre; // Guarda el nombre del usuario
+              isLoading = false; // Cambia el estado a "no cargando"
+            });
+            return; // Termina la función una vez que se ha encontrado el nombre del usuario
+          }
+        }
+
+        // Si no se encuentra el usuario en la tabla de coordinación
+        setState(() {
+          nombreUsuario = 'Usuario no encontrado';
+          isLoading = false; // Cambia el estado a "no cargando"
+        });
+      } else {
+        // Si la solicitud a la API falla
+        setState(() {
+          nombreUsuario = 'Error en la solicitud';
+          isLoading = false; // Cambia el estado a "no cargando"
+        });
       }
+    } catch (e) {
+      // Error al realizar la solicitud HTTP
+      setState(() {
+        nombreUsuario = 'Error en la solicitud';
+        isLoading = false; // Cambia el estado a "no cargando"
+      });
     }
-    return ''; // Retorna una cadena vacía si no se encuentra el nombre
   }
 
   @override
@@ -146,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Buenas Tardes, ${buscarNombreUsuario(username)}',
+                'Buenas Tardes, $nombreUsuario',
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,

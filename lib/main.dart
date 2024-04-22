@@ -37,9 +37,9 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-  final String username;
+  final int userId;
 
-  const HomePage({Key? key, required this.username}) : super(key: key);
+  const HomePage({Key? key, required this.userId}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -108,7 +108,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               Expanded(
-                child: Routes(index: index, username: widget.username),
+                child: Routes(index: index, userId: widget.userId),
               ),
             ],
           ),

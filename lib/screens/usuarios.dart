@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class UsuariosScreen extends StatefulWidget {
-  final String username;
+  final int userId;
 
-  const UsuariosScreen({Key? key, required this.username}) : super(key: key);
+  const UsuariosScreen({Key? key, required this.userId}) : super(key: key);
 
   @override
   _UsuariosScreenState createState() => _UsuariosScreenState();
@@ -16,6 +16,8 @@ class UsuariosScreen extends StatefulWidget {
 
 class _UsuariosScreenState extends State<UsuariosScreen> {
   String _selectedMenu = 'Alumnos';
+  String nombreUsuario = ''; // Variable para almacenar el nombre del usuario
+  bool isLoading = true;
 
   //List<Alumno> _alumno = [];
 
@@ -59,6 +61,49 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
     } catch (error) {
       print('Error: $error');
       // Manejar el error como prefieras, por ejemplo, mostrar un mensaje al usuario
+    }
+  }
+
+  void obtenerNombreUsuario() async {
+    final url = Uri.parse('https://localhost:44364/api/coordinacion');
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> coordinaciones = jsonDecode(response.body);
+
+        for (final coordinacion in coordinaciones) {
+          final int idUsuario = coordinacion['ID_USUARIO'];
+          final String nombre = coordinacion['NOMBRE'];
+
+          if (idUsuario == widget.userId) {
+            setState(() {
+              nombreUsuario = nombre; // Guarda el nombre del usuario
+              isLoading = false; // Cambia el estado a "no cargando"
+            });
+            return; // Termina la función una vez que se ha encontrado el nombre del usuario
+          }
+        }
+
+        // Si no se encuentra el usuario en la tabla de coordinación
+        setState(() {
+          nombreUsuario = 'Usuario no encontrado';
+          isLoading = false; // Cambia el estado a "no cargando"
+        });
+      } else {
+        // Si la solicitud a la API falla
+        setState(() {
+          nombreUsuario = 'Error en la solicitud';
+          isLoading = false; // Cambia el estado a "no cargando"
+        });
+      }
+    } catch (e) {
+      // Error al realizar la solicitud HTTP
+      setState(() {
+        nombreUsuario = 'Error en la solicitud';
+        isLoading = false; // Cambia el estado a "no cargando"
+      });
     }
   }
 
@@ -440,11 +485,11 @@ class FilterPill extends StatelessWidget {
   }
 }
 
-void main() {
+/* void main() {
   runApp(MaterialApp(
     home: UsuariosScreen(username: 'example_username'),
   ));
-}
+} */
 
 class Usuario {
   final String nombre;

@@ -108,13 +108,16 @@ class _LoginScreenState extends State<LoginScreen> {
           final String pass = usuario['PASSWORD'];
 
           if (usuarioNombre == username && pass == password) {
-            // Credenciales válidas, realizar la acción deseada (navegar a una nueva pantalla, etc.)
-            await Future.delayed(
-                Duration(seconds: 1)); // Agrega un retraso de 2 segundos
+            final int userId =
+                usuario['ID_USUARIO']; // Obtenemos el ID_USUARIO del usuario
+
+            // Credenciales válidas, realizar la acción deseada
+            await Future.delayed(Duration(seconds: 1));
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => HomePage(username: username),
+                builder: (context) =>
+                    HomePage(userId: userId), // Pasamos el ID_USUARIO
               ),
             );
             setState(() {

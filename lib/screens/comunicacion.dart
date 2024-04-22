@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ComunicacionScreen extends StatefulWidget {
-  final String username;
+  final int userId;
 
-  const ComunicacionScreen({Key? key, required this.username})
+  const ComunicacionScreen({Key? key, required this.userId})
       : super(key: key);
 
   @override
@@ -502,8 +502,8 @@ class Citas {
   });
 }
 
-void main() {
+/* void main() {
   runApp(MaterialApp(
     home: ComunicacionScreen(username: 'example_username'),
   ));
-}
+} */
