@@ -26,6 +26,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final int _selectedIndex = 0;
+  bool usuarioEncontrado =
+      false; // Variable para controlar si el usuario ya fue encontrado
 
   String nombreUsuario = ''; // Variable para almacenar el nombre del usuario
   List<Usuario> listausuarios = [];
@@ -35,52 +37,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    print('Inicializando pantalla de inicio...'); // Agregar este print
+
     obtenerusuarios();
-    obtenerNombreUsuario(); // Llama a la función para obtener el nombre del usuario
     //userId = widget.userId;
-  }
-
-  void obtenerNombreUsuario() async {
-    final url = Uri.parse('https://localhost:44364/api/coordinacion');
-
-    try {
-      final response = await http.get(url);
-
-      if (response.statusCode == 200) {
-        final List<dynamic> coordinaciones = jsonDecode(response.body);
-
-        for (final coordinacion in coordinaciones) {
-          final int idUsuario = coordinacion['ID_USUARIO'];
-          final String nombre = coordinacion['NOMBRE'];
-
-          if (idUsuario == widget.userId) {
-            setState(() {
-              nombreUsuario = nombre; // Guarda el nombre del usuario
-              isLoading = false; // Cambia el estado a "no cargando"
-            });
-            return; // Termina la función una vez que se ha encontrado el nombre del usuario
-          }
-        }
-
-        // Si no se encuentra el usuario en la tabla de coordinación
-        setState(() {
-          nombreUsuario = 'Usuario no encontrado';
-          isLoading = false; // Cambia el estado a "no cargando"
-        });
-      } else {
-        // Si la solicitud a la API falla
-        setState(() {
-          nombreUsuario = 'Error en la solicitud';
-          isLoading = false; // Cambia el estado a "no cargando"
-        });
-      }
-    } catch (e) {
-      // Error al realizar la solicitud HTTP
-      setState(() {
-        nombreUsuario = 'Error en la solicitud';
-        isLoading = false; // Cambia el estado a "no cargando"
-      });
-    }
   }
 
   @override
@@ -97,6 +57,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget content() {
+    String obtenerTipoUsuario(int userId) {
+      for (Usuario usuario in listausuarios) {
+        if (usuario.idUsuario.toString() == userId.toString()) {
+          return usuario.tipoUsuario;
+        }
+      }
+      return 'Tipo de usuario no encontrado';
+    }
+
+    String tipoUsuario = obtenerTipoUsuario(widget.userId);
+    print('Tipo de usuario: $tipoUsuario');
+
+    buscarEnEndpoint(
+        tipoUsuario, widget.userId); // Llamada al método buscarEnEndpoint
+
     return Center(
       child: SizedBox(
         width: MediaQuery.of(context).size.width,
@@ -538,21 +513,30 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void obtenerusuarios() async {
+    print('Obteniendo usuarios...');
     setState(() {
       isLoading = true;
     });
     try {
       final response =
           await http.get(Uri.parse('https://localhost:44364/api/usuarios'));
+      print('Respuesta recibida: ${response.statusCode}'); // Agregar esta línea
       if (response.statusCode == 200) {
         final parsedJson = json.decode(response.body);
+        print('JSON parseado: $parsedJson'); // Agregar esta línea
 
         setState(() {
           listausuarios = (parsedJson as List)
-              .map((item) =>
-                  Usuario(item['NOMBRE'], item['USUARIO'], item['PASSWORD']))
+              .map((item) => Usuario(
+                    item['ID_USUARIO'],
+                    item['USUARIO'],
+                    item['PASSWORD'],
+                    item['TIPO_USUARIO'],
+                  ))
               .toList();
           isLoading = false;
+
+          // Imprimir los usuarios
         });
       } else {
         setState(() {
@@ -567,12 +551,66 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
+
+  void buscarEnEndpoint(String tipoUsuario, int userId) async {
+    if (!usuarioEncontrado) {
+      // Verifica si el usuario ya fue encontrado
+      int? tipoUsuarioInt = int.tryParse(tipoUsuario);
+      if (tipoUsuarioInt != null) {
+        String endpoint;
+        switch (tipoUsuarioInt) {
+          case 1:
+            endpoint = 'https://localhost:44364/api/coordinacion';
+            break;
+          case 2:
+            endpoint = 'https://localhost:44364/api/tutor';
+            break;
+          case 3:
+            endpoint = 'https://localhost:44364/api/maestro';
+            break;
+          default:
+            print('Tipo de usuario no reconocido');
+            return;
+        }
+        try {
+          final response = await http.get(Uri.parse(endpoint));
+          if (response.statusCode == 200) {
+            final parsedJson = json.decode(response.body);
+            if (parsedJson is List) {
+              for (var item in parsedJson) {
+                if (item['ID_USUARIO'] == userId) {
+                  print('Nombre del usuario encontrado: ${item['NOMBRE']}');
+                  setState(() {
+                    nombreUsuario = item['NOMBRE'];
+                  });
+                  usuarioEncontrado =
+                      true; // Marca que el usuario ha sido encontrado
+                  return; // Termina la función una vez que se encuentra el nombre
+                }
+              }
+              print('Usuario con ID $userId no encontrado en el endpoint');
+            } else {
+              print('Error: La respuesta no es una lista');
+            }
+          } else {
+            print(
+                'Error al obtener datos del servidor: ${response.statusCode}');
+          }
+        } catch (e) {
+          print('Error al realizar la solicitud: $e');
+        }
+      } else {
+        print('Tipo de usuario no válido');
+      }
+    }
+  }
 }
 
 class Usuario {
+  final int idUsuario;
   final String user;
-  final String nombre;
   final String pass;
+  final String tipoUsuario;
 
-  Usuario(this.nombre, this.user, this.pass);
+  Usuario(this.idUsuario, this.user, this.pass, this.tipoUsuario);
 }
