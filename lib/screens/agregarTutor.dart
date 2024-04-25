@@ -122,9 +122,39 @@ class _AddTutorScreenState extends State<AddTutorScreen> {
               },
               onTap: () => _selectFechaNacimiento(context),
             ),
-            TextFormField(
-              controller: _sexoController,
-              decoration: InputDecoration(labelText: 'Sexo'),
+            DropdownButtonFormField<String>(
+              value:
+                  _sexoController.text.isNotEmpty ? _sexoController.text : '',
+              onChanged: (newValue) {
+                setState(() {
+                  _sexoController.text = newValue!;
+                });
+              },
+              items: [
+                DropdownMenuItem(
+                  value: '',
+                  child: Text('Selecciona una opción'),
+                ),
+                DropdownMenuItem(
+                  value: 'M',
+                  child: Text('Masculino'),
+                ),
+                DropdownMenuItem(
+                  value: 'F',
+                  child: Text('Femenino'),
+                ),
+              ],
+              decoration: InputDecoration(
+                labelText: 'Sexo',
+              ),
+              validator: (value) {
+                if (value == null ||
+                    value.isEmpty ||
+                    value == 'Selecciona una opción') {
+                  return 'Por favor selecciona una opción';
+                }
+                return null;
+              },
             ),
             SizedBox(height: 20),
             ElevatedButton(

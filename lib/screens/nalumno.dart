@@ -358,7 +358,7 @@ class _nAlumnoState extends State<nAlumno> {
         'DIRECCION': _direccionController.text,
         'SECCION': _seccionController.text,
         'GRADO': _gradoController.text,
-        'ID_TUTOR': tutorId.toString(),
+        'ID_TUTOR': _tutorController.text,
       };
 
       final response = await http.post(

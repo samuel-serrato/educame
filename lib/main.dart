@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
               if (constraints.maxWidth >= 600)
                 NavigationRail(
                   elevation: 5,
-                  minWidth: 150,
+                  minWidth: 100,
                   labelType: NavigationRailLabelType.all,
                   selectedLabelTextStyle: TextStyle(color: Colors.white),
                   unselectedLabelTextStyle: TextStyle(color: Colors.white),

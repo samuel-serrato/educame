@@ -21,21 +21,17 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
 
   //List<Alumno> _alumno = [];
 
-  List<Usuario> _usuarios = []; // Lista vacía inicialmente
+  List<Alumno> _usuarios = []; // Lista vacía inicialmente
+  List<Tutor> _tutores = []; // Lista vacía inicialmente
 
-  List<Maestro> _maestro = [
-    Maestro(
-      nombre: 'Maestro 1',
-      seccion: 'A',
-    ),
-    Maestro(nombre: 'Maestro 2', seccion: 'B'),
-    Maestro(nombre: 'Maestro 3', seccion: 'C'),
-  ];
+  List<Maestro> _maestros = [];
 
   @override
   void initState() {
     super.initState();
     _fetchAlumnos();
+    _fetchTutores();
+    _fetchMaestros();
   }
 
   Future<void> _fetchAlumnos() async {
@@ -46,12 +42,73 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
         final List<dynamic> data = json.decode(response.body);
         setState(() {
           _usuarios = data
-              .map((item) => Usuario(
+              .map((item) => Alumno(
+                  nombre: item['NOMBRE'],
+                  apellidop: item['APELLIDO_PATERNO'],
+                  apellidom: item['APELLIDO_MATERNO'],
+                  seccion: item['SECCION'],
+                  grado: item['GRADO'],
+                  fechaNacimiento: item['FECHA_NACIMIENTO'].toString(),
+                  sexo: item['SEXO'],
+                  direccion: item['DIRECCION'],
+                  idTutor: item['ID_TUTOR']))
+              .toList();
+        });
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('Error: $error');
+      // Manejar el error como prefieras, por ejemplo, mostrar un mensaje al usuario
+    }
+  }
+
+  Future<void> _fetchTutores() async {
+    try {
+      final response =
+          await http.get(Uri.parse('https://localhost:44364/api/tutor'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          _tutores = data
+              .map((item) => Tutor(
+                    idTutor: item['ID_TUTOR'],
+                    idUsuario: item['ID_USUARIO'],
                     nombre: item['NOMBRE'],
                     apellidop: item['APELLIDO_PATERNO'],
                     apellidom: item['APELLIDO_MATERNO'],
+                    ocupacion: item['OCUPACION'],
+                    telefono: item['TELEFONO'],
+                    direccion: item['DIRECCION'],
+                    fechaNacimiento: item['FECHA_NACIMIENTO'].toString(),
+                    sexo: item['SEXO'],
+                  ))
+              .toList();
+        });
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('Error: $error');
+      // Manejar el error como prefieras, por ejemplo, mostrar un mensaje al usuario
+    }
+  }
+
+  Future<void> _fetchMaestros() async {
+    try {
+      final response =
+          await http.get(Uri.parse('https://localhost:44364/api/maestros'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          _maestros = data
+              .map((item) => Maestro(
+                    idMaestro: item['ID_MAESTRO'],
+                    idUsuario: item['ID_USUARIO'],
+                    nombre: item['NOMBRE'],
                     seccion: item['SECCION'],
-                    grado: item['GRADO'],
+                    sexo: item['SEXO'],
+                    fechaNacimiento: item['FECHA_NACIMIENTO'].toString(),
                   ))
               .toList();
         });
@@ -107,36 +164,66 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
     }
   }
 
-  void _mostrarInformacionUsuario(BuildContext context, Usuario usuario) {
+  void _mostrarInformacionUsuario(BuildContext context, Alumno alumno) {
+    // Encuentra el tutor correspondiente al idTutor del alumno
+    Tutor? tutor;
+    for (final t in _tutores) {
+      if (t.idTutor.toString() == alumno.idTutor) {
+        tutor = t;
+        break;
+      }
+    }
+
     showModalBottomSheet(
+      backgroundColor: Colors.white,
       context: context,
       builder: (BuildContext context) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.7,
-          maxChildSize: 0.9,
-          minChildSize: 0.5,
-          expand: true,
-          builder: (context, scrollController) {
-            return Container(
-              padding: EdgeInsets.all(20.0),
-              child: ListView(
-                controller: scrollController,
+        return Container(
+          padding: EdgeInsets.all(30.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     'Información del Usuario',
                     style:
                         TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 20.0),
-                  Text(
-                      'Nombre: ${usuario.nombre} ${usuario.apellidop} ${usuario.apellidom}'),
-                  Text('Sección: ${usuario.seccion}'),
-                  Text('Grado: ${usuario.grado}'),
-                  // Agrega aquí más información del usuario si es necesario
                 ],
               ),
-            );
-          },
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 20.0),
+                  Text(
+                      'Nombre: ${alumno.nombre} ${alumno.apellidop} ${alumno.apellidom}'),
+                  Text('Sección: ${alumno.seccion}'),
+                  Text('Grado: ${alumno.grado}'),
+                  Text('Fecha de Nacimiento: ${alumno.fechaNacimiento}'),
+                  Text('Sexo: ${alumno.sexo}'),
+                  Text('Dirección: ${alumno.direccion}'),
+                  SizedBox(height: 20.0),
+                  Text(
+                    'Información del Tutor:',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10.0),
+                  if (tutor != null) ...[
+                    Text(
+                        'Nombre: ${tutor.nombre} ${tutor.apellidop} ${tutor.apellidom}'),
+                    Text('Ocupación: ${tutor.ocupacion}'),
+                    Text('Teléfono: ${tutor.telefono}'),
+                    Text('Dirección: ${tutor.direccion}'),
+                    Text('Fecha de Nacimiento: ${tutor.fechaNacimiento}'),
+                    Text('Sexo: ${tutor.sexo}'),
+                  ] else
+                    Text('Tutor no encontrado'),
+                ],
+              ),
+            ],
+          ),
         );
       },
     );
@@ -259,11 +346,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                           if (_selectedMenu == 'Alumnos') {
                             _mostrarformAlumno(context);
                           } else if (_selectedMenu == 'Maestros') {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => nMaestro()),
-                            );
+                            _mostrarformMaestro(context);
                           }
                         },
                         child: Text(
@@ -335,7 +418,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: ListView.builder(
-                        itemCount: _maestro.length,
+                        itemCount: _maestros.length,
                         itemBuilder: (context, index) {
                           return Container(
                             margin: EdgeInsets.symmetric(vertical: 5),
@@ -353,7 +436,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        '${_maestro[index].nombre}',
+                                        '${_maestros[index].nombre}',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -363,7 +446,11 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                              'Sección: ${_maestro[index].seccion}'),
+                                            'Sexo: ${_maestros[index].sexo}',
+                                          ),
+                                          Text(
+                                            'Sección: ${_maestros[index].seccion}',
+                                          ),
                                         ],
                                       ),
                                     ],
@@ -422,6 +509,24 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
 
     if (result == true) {
       _fetchAlumnos();
+      _fetchTutores();
+    }
+  }
+
+  void _mostrarformMaestro(BuildContext context) async {
+    final result = await Navigator.push<bool>(
+      context,
+      PageRouteBuilder(
+        transitionDuration:
+            Duration.zero, // Establece la duración de transición como cero
+        pageBuilder: (context, animation, secondaryAnimation) => nMaestro(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            child, // Establece una transición nula
+      ),
+    );
+
+    if (result == true) {
+      _fetchMaestros();
     }
   }
 }
@@ -448,41 +553,6 @@ class FilterPill extends StatelessWidget {
       ),
     );
   }
-
-  void _mostrarInformacionUsuario(BuildContext context, Usuario usuario) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.7,
-          maxChildSize: 0.9,
-          minChildSize: 0.5,
-          expand: true,
-          builder: (context, scrollController) {
-            return Container(
-              padding: EdgeInsets.all(20.0),
-              child: ListView(
-                controller: scrollController,
-                children: [
-                  Text(
-                    'Información del Usuario',
-                    style:
-                        TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 20.0),
-                  Text(
-                      'Nombre: ${usuario.nombre} ${usuario.apellidop} ${usuario.apellidom}'),
-                  Text('Sección: ${usuario.seccion}'),
-                  Text('Grado: ${usuario.grado}'),
-                  // Agrega aquí más información del usuario si es necesario
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
 }
 
 /* void main() {
@@ -491,25 +561,75 @@ class FilterPill extends StatelessWidget {
   ));
 } */
 
-class Usuario {
+class Alumno {
   final String nombre;
   final String apellidop;
   final String apellidom;
   final String seccion;
   final String grado;
+  final String fechaNacimiento;
+  final String sexo;
+  final String direccion;
+  final String idTutor;
 
-  Usuario({
+  Alumno({
     required this.nombre,
     required this.apellidop,
     required this.apellidom,
     required this.seccion,
     required this.grado,
+    required this.fechaNacimiento,
+    required this.sexo,
+    required this.direccion,
+    required this.idTutor,
+  });
+}
+
+class Tutor {
+  final int idTutor;
+  final int idUsuario;
+  final String nombre;
+  final String apellidop;
+  final String apellidom;
+  final String ocupacion;
+  final String telefono;
+  final String direccion;
+  final String fechaNacimiento;
+  final String sexo;
+
+  Tutor({
+    required this.idTutor,
+    required this.idUsuario,
+    required this.nombre,
+    required this.apellidop,
+    required this.apellidom,
+    required this.ocupacion,
+    required this.telefono,
+    required this.direccion,
+    required this.fechaNacimiento,
+    required this.sexo,
   });
 }
 
 class Maestro {
+  final int idMaestro;
+  final int idUsuario;
   final String nombre;
+  final String sexo;
   final String seccion;
+  final String fechaNacimiento;
 
-  Maestro({required this.nombre, required this.seccion});
+  Maestro({
+    required this.idMaestro,
+    required this.idUsuario,
+    required this.nombre,
+    required this.sexo,
+    required this.seccion,
+    required this.fechaNacimiento,
+  });
 }
+
+
+                 /*  Text('Fecha de Nacimiento: ${usuario.grado}'),
+                  Text('Sexo: ${usuario.grado}'),
+                  Text('Dirección: ${usuario.grado}'), */
