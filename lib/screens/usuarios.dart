@@ -21,7 +21,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
 
   //List<Alumno> _alumno = [];
 
-  List<Alumno> _usuarios = []; // Lista vacía inicialmente
+  List<Alumno> _alumnos = []; // Lista vacía inicialmente
   List<Tutor> _tutores = []; // Lista vacía inicialmente
 
   List<Maestro> _maestros = [];
@@ -41,7 +41,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         setState(() {
-          _usuarios = data
+          _alumnos = data
               .map((item) => Alumno(
                   nombre: item['NOMBRE'],
                   apellidop: item['APELLIDO_PATERNO'],
@@ -359,7 +359,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                 ],
               ),
             ),
-            //Filtros
+            // Filtros
             Container(
               margin: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
               decoration: BoxDecoration(
@@ -368,14 +368,43 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
               ),
               padding: EdgeInsets.symmetric(vertical: 5),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment:
+                    MainAxisAlignment.spaceEvenly, // Ajustar el espaciado
                 children: [
-                  FilterPill(text: 'Todos', isSelected: true),
-                  FilterPill(text: 'Sección', isSelected: false),
-                  FilterPill(text: 'Grado', isSelected: false),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(2),
+                      child: RoundedDropdownFormField(
+                        borderColor: Color(0xFF181F4B),
+                        items: ['Opción 1', 'Opción 2', 'Opción 3'],
+                        hintText: 'Todos',
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(2),
+                      child: RoundedDropdownFormField(
+                        borderColor: Color(0xFF181F4B),
+                        items: ['Opción A', 'Opción B', 'Opción C'],
+                        hintText: 'Sección',
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(2),
+                      child: RoundedDropdownFormField(
+                        borderColor: Color(0xFF181F4B),
+                        items: ['Item 1', 'Item 2', 'Item 3'],
+                        hintText: 'Grado',
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
+
             //Lista de alumnos
             _selectedMenu == 'Alumnos'
                 ? Expanded(
@@ -387,21 +416,30 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: ListView.builder(
-                        itemCount: _usuarios.length,
+                        itemCount: _alumnos.length,
                         itemBuilder: (context, index) {
-                          return ListTile(
-                            onTap: () => _mostrarInformacionUsuario(
-                                context, _usuarios[index]),
-                            title: Text(
-                              '${_usuarios[index].nombre} ${_usuarios[index].apellidop} ${_usuarios[index].apellidom}',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                          return Container(
+                            margin: EdgeInsets.symmetric(vertical: 5),
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[200],
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            subtitle: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('Sección: ${_usuarios[index].seccion}'),
-                                Text('Grado: ${_usuarios[index].grado}'),
-                              ],
+                            child: ListTile(
+                              onTap: () => _mostrarInformacionUsuario(
+                                  context, _alumnos[index]),
+                              title: Text(
+                                '${_alumnos[index].nombre} ${_alumnos[index].apellidop} ${_alumnos[index].apellidom}',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Sección: ${_alumnos[index].seccion}'),
+                                  Text('Grado: ${_alumnos[index].grado}'),
+                                ],
+                              ),
                             ),
                           );
                         },
@@ -627,6 +665,47 @@ class Maestro {
     required this.seccion,
     required this.fechaNacimiento,
   });
+}
+
+class RoundedDropdownFormField extends StatelessWidget {
+  final List<String> items;
+  final String hintText;
+  final Color borderColor;
+
+  RoundedDropdownFormField({
+    required this.items,
+    required this.hintText,
+    required this.borderColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(60.0),
+        border: Border.all(
+          color: borderColor,
+        ),
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: DropdownButtonFormField<String>(
+          iconSize: 20,
+          decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: hintText,
+              hintStyle: TextStyle(fontSize: 15)),
+          items: items.map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          onChanged: (String? value) {},
+        ),
+      ),
+    );
+  }
 }
 
 

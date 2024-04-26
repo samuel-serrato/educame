@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 class ComunicacionScreen extends StatefulWidget {
   final int userId;
 
-  const ComunicacionScreen({Key? key, required this.userId})
-      : super(key: key);
+  const ComunicacionScreen({Key? key, required this.userId}) : super(key: key);
 
   @override
   _ComunicacionScreenState createState() => _ComunicacionScreenState();
@@ -211,7 +210,6 @@ class _ComunicacionScreenState extends State<ComunicacionScreen> {
                 ],
               ),
             ),
-            // Tabla de Avisos
             _selectedMenu == 'Avisos'
                 ? Expanded(
                     child: Container(
@@ -221,69 +219,49 @@ class _ComunicacionScreenState extends State<ComunicacionScreen> {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: SingleChildScrollView(
-                        child: DataTable(
-                          columnSpacing: 10,
-                          dataRowMaxHeight: 100,
-                          dataRowMinHeight: 50,
-                          horizontalMargin: 20,
-                          columns: [
-                            DataColumn(
-                                label: SizedBox(
-                              width: screenWidth * 0.1,
-                              child: Text(
-                                'Tipo',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            )),
-                            DataColumn(
-                                label: SizedBox(
-                              width: screenWidth * 0.18,
-                              child: Text(
-                                'Detalles',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            )),
-                            DataColumn(
-                                label: SizedBox(
-                              width: screenWidth * 0.1,
-                              child: Text(
-                                'Autor',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            )),
-                            DataColumn(
-                                label: SizedBox(
-                              width: screenWidth * 0.15,
-                              child: Text(
-                                'Receptor',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            )),
-                            DataColumn(
-                                label: SizedBox(
-                              width: screenWidth * 0.15,
-                              child: Text(
-                                'Fecha',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            )),
-                          ],
-                          rows: _avisos
-                              .map(
-                                (aviso) => DataRow(cells: [
-                                  DataCell(Text(aviso.tipo,
-                                      style: TextStyle(fontSize: 10))),
-                                  DataCell(Text(aviso.descripcion,
-                                      style: TextStyle(fontSize: 10))),
-                                  DataCell(Text(aviso.autor,
-                                      style: TextStyle(fontSize: 10))),
-                                  DataCell(Text(aviso.destinatario,
-                                      style: TextStyle(fontSize: 10))),
-                                  DataCell(Text(aviso.fechaCreacion,
-                                      style: TextStyle(fontSize: 10))),
-                                ]),
-                              )
-                              .toList(),
+                        child: SizedBox(
+                          width: MediaQuery.of(context)
+                              .size
+                              .width, // Ancho de la pantalla
+                          child: DataTable(
+                            columnSpacing: 10,
+                            dataRowMaxHeight: 100,
+                            dataRowMinHeight: 50,
+                            horizontalMargin: 20,
+                            columns: [
+                              DataColumn(
+                                  label: Text('Tipo',
+                                      style: TextStyle(fontSize: 12))),
+                              DataColumn(
+                                  label: Text('Detalles',
+                                      style: TextStyle(fontSize: 12))),
+                              DataColumn(
+                                  label: Text('Autor',
+                                      style: TextStyle(fontSize: 12))),
+                              DataColumn(
+                                  label: Text('Receptor',
+                                      style: TextStyle(fontSize: 12))),
+                              DataColumn(
+                                  label: Text('Fecha',
+                                      style: TextStyle(fontSize: 12))),
+                            ],
+                            rows: _avisos
+                                .map(
+                                  (aviso) => DataRow(cells: [
+                                    DataCell(Text(aviso.tipo,
+                                        style: TextStyle(fontSize: 10))),
+                                    DataCell(Text(aviso.descripcion,
+                                        style: TextStyle(fontSize: 10))),
+                                    DataCell(Text(aviso.autor,
+                                        style: TextStyle(fontSize: 10))),
+                                    DataCell(Text(aviso.destinatario,
+                                        style: TextStyle(fontSize: 10))),
+                                    DataCell(Text(aviso.fechaCreacion,
+                                        style: TextStyle(fontSize: 10))),
+                                  ]),
+                                )
+                                .toList(),
+                          ),
                         ),
                       ),
                     ),
@@ -297,73 +275,54 @@ class _ComunicacionScreenState extends State<ComunicacionScreen> {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: SingleChildScrollView(
-                        child: DataTable(
-                          columnSpacing: 10,
-                          dataRowMaxHeight: 100,
-                          dataRowMinHeight: 50,
-                          horizontalMargin: 20,
-                          columns: [
-                            DataColumn(
-                                label: SizedBox(
-                              width: screenWidth * 0.1,
-                              child: Text(
-                                'Tipo',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            )),
-                            DataColumn(
-                                label: SizedBox(
-                              width: screenWidth * 0.18,
-                              child: Text(
-                                'Detalles',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            )),
-                            DataColumn(
-                                label: SizedBox(
-                              width: screenWidth * 0.1,
-                              child: Text(
-                                'Autor',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            )),
-                            DataColumn(
-                                label: SizedBox(
-                              width: screenWidth * 0.15,
-                              child: Text(
-                                'Receptor',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            )),
-                            DataColumn(
-                                label: SizedBox(
-                              width: screenWidth * 0.15,
-                              child: Text(
-                                'Fecha',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            )),
-                          ],
-                          rows: _citas
-                              .map(
-                                (citas) => DataRow(cells: [
-                                  DataCell(Text(citas.tipo,
-                                      style: TextStyle(fontSize: 10))),
-                                  DataCell(Text(citas.descripcion,
-                                      style: TextStyle(fontSize: 10))),
-                                  DataCell(Text(citas.autor,
-                                      style: TextStyle(fontSize: 10))),
-                                  DataCell(Text(citas.destinatario,
-                                      style: TextStyle(fontSize: 10))),
-                                  DataCell(Text(citas.fechaCreacion,
-                                      style: TextStyle(fontSize: 10))),
-                                ]),
-                              )
-                              .toList(),
+                        child: SizedBox(
+                          width: MediaQuery.of(context)
+                              .size
+                              .width, // Ancho de la pantalla
+                          child: DataTable(
+                            columnSpacing: 10,
+                            dataRowMaxHeight: 100,
+                            dataRowMinHeight: 50,
+                            horizontalMargin: 20,
+                            columns: [
+                              DataColumn(
+                                  label: Text('Tipo',
+                                      style: TextStyle(fontSize: 12))),
+                              DataColumn(
+                                  label: Text('Detalles',
+                                      style: TextStyle(fontSize: 12))),
+                              DataColumn(
+                                  label: Text('Autor',
+                                      style: TextStyle(fontSize: 12))),
+                              DataColumn(
+                                  label: Text('Receptor',
+                                      style: TextStyle(fontSize: 12))),
+                              DataColumn(
+                                  label: Text('Fecha',
+                                      style: TextStyle(fontSize: 12))),
+                            ],
+                            rows: _citas
+                                .map(
+                                  (citas) => DataRow(cells: [
+                                    DataCell(Text(citas.tipo,
+                                        style: TextStyle(fontSize: 10))),
+                                    DataCell(Text(citas.descripcion,
+                                        style: TextStyle(fontSize: 10))),
+                                    DataCell(Text(citas.autor,
+                                        style: TextStyle(fontSize: 10))),
+                                    DataCell(Text(citas.destinatario,
+                                        style: TextStyle(fontSize: 10))),
+                                    DataCell(Text(citas.fechaCreacion,
+                                        style: TextStyle(fontSize: 10))),
+                                  ]),
+                                )
+                                .toList(),
+                          ),
                         ),
                       ),
                     ),
-                  ), // Espacio vacío si no está seleccionado Avisos
+                  ),
+            // Espacio vacío si no está seleccionado Avisos
             // Botones Inferiores
             // Botones Inferiores
             Container(
