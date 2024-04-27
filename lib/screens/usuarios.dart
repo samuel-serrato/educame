@@ -365,162 +365,144 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
               ),
             ),
             // Filtros
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(0),
-                color: Colors.white,
+            if (_selectedMenu == 'Alumnos') ...[
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(0),
+                  color: Colors.white,
+                ),
+                padding: EdgeInsets.symmetric(vertical: 5),
+                child: Row(
+                  mainAxisAlignment:
+                      MainAxisAlignment.spaceEvenly, // Ajustar el espaciado
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(2),
+                        child: RoundedDropdownFormField(
+                          borderColor: Color(0xFF181F4B),
+                          items: ['Todos', 'Secundaria', 'Preparatoria'],
+                          hintText: 'Sección',
+                          onChanged: (String? value) {
+                            setState(() {
+                              _filtroSeccion = value ?? 'Todos';
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(2),
+                        child: RoundedDropdownFormField(
+                          borderColor: Color(0xFF181F4B),
+                          items: ['Todos', '1', '2', '3'],
+                          hintText: 'Grado',
+                          onChanged: (String? value) {
+                            setState(() {
+                              _filtroGrado = value ?? 'Todos';
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              padding: EdgeInsets.symmetric(vertical: 5),
-              child: Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.spaceEvenly, // Ajustar el espaciado
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(2),
-                      child: RoundedDropdownFormField(
-                        borderColor: Color(0xFF181F4B),
-                        items: ['Todos', 'Secundaria', 'Preparatoria'],
-                        hintText: 'Sección',
-                        onChanged: (String? value) {
-                          setState(() {
-                            _filtroSeccion = value ?? 'Todos';
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(2),
-                      child: RoundedDropdownFormField(
-                        borderColor: Color(0xFF181F4B),
-                        items: ['Todos', '1', '2', '3'],
-                        hintText: 'Grado',
-                        onChanged: (String? value) {
-                          setState(() {
-                            _filtroGrado = value ?? 'Todos';
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            //Lista de alumnos
-            _selectedMenu == 'Alumnos'
-                ? Expanded(
-                    child: Container(
-                      margin: EdgeInsets.all(10.0),
-                      padding: EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: ListView.builder(
-                        itemCount: _alumnos.length,
-                        itemBuilder: (context, index) {
-                          final reversedIndex = _alumnos.length - 1 - index;
-                          // Filtrar por sección y grado
-                          if ((_filtroSeccion == 'Todos' ||
-                                  _alumnos[reversedIndex].seccion ==
-                                      _filtroSeccion) &&
-                              (_filtroGrado == 'Todos' ||
-                                  _alumnos[reversedIndex].grado ==
-                                      _filtroGrado)) {
-                            return Container(
-                              margin: EdgeInsets.symmetric(vertical: 5),
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[200],
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: ListTile(
-                                onTap: () => _mostrarInformacionUsuario(
-                                    context, _alumnos[reversedIndex]),
-                                title: Text(
-                                  '${_alumnos[reversedIndex].nombre} ${_alumnos[reversedIndex].apellidop} ${_alumnos[reversedIndex].apellidom}',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                subtitle: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                        'Sección: ${_alumnos[reversedIndex].seccion}'),
-                                    Text(
-                                        'Grado: ${_alumnos[reversedIndex].grado}'),
-                                  ],
-                                ),
-                              ),
-                            );
-                          } else {
-                            // Si no coincide con los filtros, retornar un contenedor vacío
-                            return Container();
-                          }
-                        },
-                      ),
-                    ),
-                  )
-
-                //Lista de maestros
-                : Expanded(
-                    child: Container(
-                      margin: EdgeInsets.all(10.0),
-                      padding: EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: ListView.builder(
-                        itemCount: _maestros.length,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            margin: EdgeInsets.symmetric(vertical: 5),
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(10),
+            ],
+            //Lista de usuarios
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.all(10.0),
+                padding: EdgeInsets.all(10.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: ListView.builder(
+                  itemCount: _selectedMenu == 'Alumnos'
+                      ? _alumnos.length
+                      : _maestros.length,
+                  itemBuilder: (context, index) {
+                    if (_selectedMenu == 'Alumnos') {
+                      final reversedIndex = _alumnos.length - 1 - index;
+                      // Filtrar por sección y grado
+                      if ((_filtroSeccion == 'Todos' ||
+                              _alumnos[reversedIndex].seccion ==
+                                  _filtroSeccion) &&
+                          (_filtroGrado == 'Todos' ||
+                              _alumnos[reversedIndex].grado == _filtroGrado)) {
+                        return Container(
+                          margin: EdgeInsets.symmetric(vertical: 5),
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: ListTile(
+                            onTap: () => _mostrarInformacionUsuario(
+                                context, _alumnos[reversedIndex]),
+                            title: Text(
+                              '${_alumnos[reversedIndex].nombre} ${_alumnos[reversedIndex].apellidop} ${_alumnos[reversedIndex].apellidom}',
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            child: Row(
+                            subtitle: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '${_maestros[index].nombre}',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            'Sexo: ${_maestros[index].sexo}',
-                                          ),
-                                          Text(
-                                            'Sección: ${_maestros[index].seccion}',
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                Text(
+                                    'Sección: ${_alumnos[reversedIndex].seccion}'),
+                                Text('Grado: ${_alumnos[reversedIndex].grado}'),
                               ],
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
+                          ),
+                        );
+                      } else {
+                        // Si no coincide con los filtros, retornar un contenedor vacío
+                        return Container();
+                      }
+                    } else {
+                      // Para la sección de maestros
+                      return Container(
+                        margin: EdgeInsets.symmetric(vertical: 5),
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${_maestros[index].nombre}',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Sexo: ${_maestros[index].sexo}'),
+                                      Text(
+                                          'Sección: ${_maestros[index].seccion}'),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
+            ),
             //Buscador
             Container(
               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
@@ -533,7 +515,8 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                 decoration: InputDecoration(
                   fillColor: Colors.white,
                   filled: true,
-                  hintText: 'Buscar alumno',
+                  hintText:
+                      'Buscar ${_selectedMenu == 'Alumnos' ? 'alumno' : 'maestro'}',
                   hintStyle: TextStyle(color: Colors.grey),
                   suffixIcon: Icon(Icons.search, color: Colors.grey),
                   border: UnderlineInputBorder(
@@ -544,7 +527,12 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                   ),
                 ),
                 onChanged: (value) {
-                  searchAlumnos(value);
+                  if (_selectedMenu == 'Alumnos') {
+                    searchAlumnos(value);
+                  } else {
+                    // Implementa la función de búsqueda para maestros
+                    searchMaestros(value);
+                  }
                 },
               ),
             ),
@@ -565,6 +553,21 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
         _alumnos = _alumnos.where((alumno) {
           final nombreCompleto =
               '${alumno.nombre} ${alumno.apellidop} ${alumno.apellidom}';
+          return nombreCompleto.toLowerCase().contains(query.toLowerCase());
+        }).toList();
+      }
+    });
+  }
+
+  void searchMaestros(String query) {
+    setState(() {
+      // Restaurar la lista completa de alumnos si la consulta está vacía
+      if (query.isEmpty) {
+        _fetchMaestros(); // Esto vuelve a cargar la lista completa de alumnos desde tu fuente de datos
+      } else {
+        // Filtrar los alumnos según la consulta
+        _maestros = _maestros.where((maestro) {
+          final nombreCompleto = '${maestro.nombre}';
           return nombreCompleto.toLowerCase().contains(query.toLowerCase());
         }).toList();
       }

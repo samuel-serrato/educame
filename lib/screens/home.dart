@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart'; // Importa el paquete de internacionalización para formatear la fecha
 import 'package:intl/date_symbol_data_local.dart'; // Importa este paquete para inicializar los símbolos de fecha localmente
+import 'package:url_launcher/url_launcher.dart';
 
 // Antes de usar DateFormat, asegúrate de inicializar los símbolos de fecha localmente
 
@@ -169,31 +170,18 @@ class _HomeScreenState extends State<HomeScreen> {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             backgroundColor: Colors.white,
-            child: const Icon(
-              Icons.person,
-              color: Color(0xFF063B5D),
-              size: 40,
+            child: Image.asset(
+              'assets/logo_soc.png', // Ruta de tu imagen
+              width: 40, // Ancho de la imagen
+              height: 40, // Alto de la imagen
+              fit: BoxFit.cover, // Ajuste de la imagen
             ),
             onPressed: () {
-              /* Navigator.of(context).push(
-                  MaterialPageRoute<void>(builder: (BuildContext context) {
-                return const MiCuentaScreen();
-              })); */
+              const String url = 'https://www.institutosocrates.mx';
+              launchUrl(Uri.parse(url));
             },
           ),
         ),
-        /* const Padding(
-          padding: EdgeInsets.only(right: 20),
-          child: CircleAvatar(
-            radius: 28,
-            backgroundColor: Colors.white,
-            child: Icon(
-              Icons.person,
-              color: Color(0xFF52C88F),
-              size: 45,
-            ),
-          ),
-        ), */
       ],
     );
   }
