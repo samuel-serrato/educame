@@ -71,7 +71,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
   Future<void> _fetchTutores() async {
     try {
       final response =
-          await http.get(Uri.parse('https://localhost:44364/api/tutor'));
+          await http.get(Uri.parse('https://localhost:44364/api/tutores'));
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         setState(() {
@@ -363,7 +363,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                   ),
                 ],
               ),
-            ),
+            ) ,
             // Filtros
             if (_selectedMenu == 'Alumnos') ...[
               Container(
@@ -372,7 +372,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                   borderRadius: BorderRadius.circular(0),
                   color: Colors.white,
                 ),
-                padding: EdgeInsets.symmetric(vertical: 5),
+                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                 child: Row(
                   mainAxisAlignment:
                       MainAxisAlignment.spaceEvenly, // Ajustar el espaciado
@@ -392,6 +392,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                         ),
                       ),
                     ),
+                    SizedBox(width: 20),
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(2),

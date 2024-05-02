@@ -26,6 +26,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String obtenerTipoUsuario(int userId) {
+    for (Usuario usuario in listausuarios) {
+      if (usuario.idUsuario.toString() == userId.toString()) {
+        return usuario.tipoUsuario;
+      }
+    }
+    return 'Tipo de usuario no encontrado';
+  }
+
   final int _selectedIndex = 0;
   bool usuarioEncontrado =
       false; // Variable para controlar si el usuario ya fue encontrado
@@ -58,15 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget content() {
-    String obtenerTipoUsuario(int userId) {
-      for (Usuario usuario in listausuarios) {
-        if (usuario.idUsuario.toString() == userId.toString()) {
-          return usuario.tipoUsuario;
-        }
-      }
-      return 'Tipo de usuario no encontrado';
-    }
-
     String tipoUsuario = obtenerTipoUsuario(widget.userId);
     print('Tipo de usuario: $tipoUsuario');
 
@@ -138,6 +138,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget bienvenida() {
+    String userType = obtenerTipoUsuario(widget.userId);
+    String greeting = '';
+    if (userType == '3') {
+      greeting = 'Hola, Maestro';
+    } else {
+      greeting = 'Hola, $nombreUsuario';
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -147,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Buenas Tardes, $nombreUsuario',
+                greeting,
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -551,10 +558,10 @@ class _HomeScreenState extends State<HomeScreen> {
             endpoint = 'https://localhost:44364/api/coordinacion';
             break;
           case 2:
-            endpoint = 'https://localhost:44364/api/tutor';
+            endpoint = 'https://localhost:44364/api/tutores';
             break;
           case 3:
-            endpoint = 'https://localhost:44364/api/maestro';
+            endpoint = 'https://localhost:44364/api/maestros';
             break;
           default:
             print('Tipo de usuario no reconocido');

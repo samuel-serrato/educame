@@ -78,268 +78,276 @@ class _nAlumnoState extends State<nAlumno> {
         color: Color(0xFFE5E5E5),
         child: Column(children: [
           //Menú principal
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: Colors.white,
-            ),
-            margin: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-            padding: EdgeInsets.all(20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          TextFormField(
-                            controller: _nombreController,
-                            decoration: InputDecoration(
-                              labelText: 'Nombre del alumno',
-                            ),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Por favor ingresa la información';
-                              }
-                              return null;
-                            },
-                          ),
-                          TextFormField(
-                            controller: _apellidopController,
-                            decoration: InputDecoration(
-                              labelText: 'Apellido Paterno',
-                            ),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Por favor ingresa la información';
-                              }
-                              return null;
-                            },
-                          ),
-                          TextFormField(
-                            controller: _apellidomController,
-                            decoration: InputDecoration(
-                              labelText: 'Apellido Materno',
-                            ),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Por favor ingresa la información';
-                              }
-                              return null;
-                            },
-                          ),
-                          SizedBox(height: 20),
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 16.0),
-                            child: TextButton(
-                              onPressed: () => _selectFechaNacimiento(context),
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Colors.white),
-                                padding: MaterialStateProperty.all<
-                                    EdgeInsetsGeometry>(EdgeInsets.zero),
-                                side: MaterialStateProperty.all<BorderSide>(
-                                    BorderSide(color: Colors.grey)),
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                ),
+          Center(
+            child: Container(
+              constraints: BoxConstraints(
+                  maxWidth: 600), // Establece el ancho máximo deseado
+
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: Colors.white,
+              ),
+              margin: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            TextFormField(
+                              controller: _nombreController,
+                              decoration: InputDecoration(
+                                labelText: 'Nombre del alumno',
                               ),
-                              child: Row(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Fecha de Nacimiento: ',
-                                      style: TextStyle(color: Colors.black),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Por favor ingresa la información';
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _apellidopController,
+                              decoration: InputDecoration(
+                                labelText: 'Apellido Paterno',
+                              ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Por favor ingresa la información';
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _apellidomController,
+                              decoration: InputDecoration(
+                                labelText: 'Apellido Materno',
+                              ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Por favor ingresa la información';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 20),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16.0),
+                              child: TextButton(
+                                onPressed: () =>
+                                    _selectFechaNacimiento(context),
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.white),
+                                  padding: MaterialStateProperty.all<
+                                      EdgeInsetsGeometry>(EdgeInsets.zero),
+                                  side: MaterialStateProperty.all<BorderSide>(
+                                      BorderSide(color: Colors.grey)),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
                                     ),
                                   ),
-                                  Text(
-                                    _fechanacimientoController.text.isNotEmpty
-                                        ? _fechanacimientoController.text
-                                        : 'Seleccionar fecha',
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                ],
+                                ),
+                                child: Row(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'Fecha de Nacimiento: ',
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                    ),
+                                    Text(
+                                      _fechanacimientoController.text.isNotEmpty
+                                          ? _fechanacimientoController.text
+                                          : 'Seleccionar fecha',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          DropdownButtonFormField<String>(
-                            value: _sexoController.text.isNotEmpty
-                                ? _sexoController.text
-                                : '',
-                            onChanged: (newValue) {
-                              setState(() {
-                                _sexoController.text = newValue!;
-                              });
-                            },
-                            items: [
-                              DropdownMenuItem(
-                                value: '',
-                                child: Text('Selecciona una opción'),
+                            DropdownButtonFormField<String>(
+                              value: _sexoController.text.isNotEmpty
+                                  ? _sexoController.text
+                                  : '',
+                              onChanged: (newValue) {
+                                setState(() {
+                                  _sexoController.text = newValue!;
+                                });
+                              },
+                              items: [
+                                DropdownMenuItem(
+                                  value: '',
+                                  child: Text('Selecciona una opción'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'M',
+                                  child: Text('Masculino'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'F',
+                                  child: Text('Femenino'),
+                                ),
+                              ],
+                              decoration: InputDecoration(
+                                labelText: 'Sexo',
                               ),
-                              DropdownMenuItem(
-                                value: 'M',
-                                child: Text('Masculino'),
-                              ),
-                              DropdownMenuItem(
-                                value: 'F',
-                                child: Text('Femenino'),
-                              ),
-                            ],
-                            decoration: InputDecoration(
-                              labelText: 'Sexo',
+                              validator: (value) {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    value == 'Selecciona una opción') {
+                                  return 'Por favor selecciona una opción';
+                                }
+                                return null;
+                              },
                             ),
-                            validator: (value) {
-                              if (value == null ||
-                                  value.isEmpty ||
-                                  value == 'Selecciona una opción') {
-                                return 'Por favor selecciona una opción';
-                              }
-                              return null;
-                            },
-                          ),
-                          TextFormField(
-                            controller: _direccionController,
-                            decoration: InputDecoration(
-                              labelText: 'Dirección',
+                            TextFormField(
+                              controller: _direccionController,
+                              decoration: InputDecoration(
+                                labelText: 'Dirección',
+                              ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Por favor ingresa la información';
+                                }
+                                return null;
+                              },
                             ),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Por favor ingresa la información';
-                              }
-                              return null;
-                            },
-                          ),
-                          DropdownButtonFormField<String>(
-                            value: _seccionController.text.isNotEmpty
-                                ? _seccionController.text
-                                : '',
-                            onChanged: (newValue) {
-                              setState(() {
-                                _seccionController.text = newValue!;
-                              });
-                            },
-                            items: [
-                              DropdownMenuItem(
-                                value: '',
-                                child: Text('Selecciona una opción'),
+                            DropdownButtonFormField<String>(
+                              value: _seccionController.text.isNotEmpty
+                                  ? _seccionController.text
+                                  : '',
+                              onChanged: (newValue) {
+                                setState(() {
+                                  _seccionController.text = newValue!;
+                                });
+                              },
+                              items: [
+                                DropdownMenuItem(
+                                  value: '',
+                                  child: Text('Selecciona una opción'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Secundaria',
+                                  child: Text('Secundaria'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Preparatoria',
+                                  child: Text('Preparatoria'),
+                                ),
+                              ],
+                              decoration: InputDecoration(
+                                labelText: 'Sección',
                               ),
-                              DropdownMenuItem(
-                                value: 'Secundaria',
-                                child: Text('Secundaria'),
-                              ),
-                              DropdownMenuItem(
-                                value: 'Preparatoria',
-                                child: Text('Preparatoria'),
-                              ),
-                            ],
-                            decoration: InputDecoration(
-                              labelText: 'Sección',
+                              validator: (value) {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    value == 'Selecciona una opción') {
+                                  return 'Por favor selecciona una opción';
+                                }
+                                return null;
+                              },
                             ),
-                            validator: (value) {
-                              if (value == null ||
-                                  value.isEmpty ||
-                                  value == 'Selecciona una opción') {
-                                return 'Por favor selecciona una opción';
-                              }
-                              return null;
-                            },
-                          ),
-                          DropdownButtonFormField<String>(
-                            value: _gradoController.text.isNotEmpty
-                                ? _gradoController.text
-                                : '',
-                            onChanged: (newValue) {
-                              setState(() {
-                                _gradoController.text = newValue!;
-                              });
-                            },
-                            items: [
-                              DropdownMenuItem(
-                                value: '',
-                                child: Text('Selecciona una opción'),
+                            DropdownButtonFormField<String>(
+                              value: _gradoController.text.isNotEmpty
+                                  ? _gradoController.text
+                                  : '',
+                              onChanged: (newValue) {
+                                setState(() {
+                                  _gradoController.text = newValue!;
+                                });
+                              },
+                              items: [
+                                DropdownMenuItem(
+                                  value: '',
+                                  child: Text('Selecciona una opción'),
+                                ),
+                                DropdownMenuItem(
+                                  value: '1',
+                                  child: Text('1'),
+                                ),
+                                DropdownMenuItem(
+                                  value: '2',
+                                  child: Text('2'),
+                                ),
+                                DropdownMenuItem(
+                                  value: '3',
+                                  child: Text('3'),
+                                ),
+                              ],
+                              decoration: InputDecoration(
+                                labelText: 'Grado',
                               ),
-                              DropdownMenuItem(
-                                value: '1',
-                                child: Text('1'),
-                              ),
-                              DropdownMenuItem(
-                                value: '2',
-                                child: Text('2'),
-                              ),
-                              DropdownMenuItem(
-                                value: '3',
-                                child: Text('3'),
-                              ),
-                            ],
-                            decoration: InputDecoration(
-                              labelText: 'Grado',
+                              validator: (value) {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    value == 'Selecciona una opción') {
+                                  return 'Por favor selecciona una opción';
+                                }
+                                return null;
+                              },
                             ),
-                            validator: (value) {
-                              if (value == null ||
-                                  value.isEmpty ||
-                                  value == 'Selecciona una opción') {
-                                return 'Por favor selecciona una opción';
-                              }
-                              return null;
-                            },
-                          ),
-                          SizedBox(height: 20),
-                          _nombreTutor != null
-                              ? Text(
-                                  'Nombre del Tutor: $_nombreTutor',
-                                  style: TextStyle(fontSize: 16),
-                                )
-                              : SizedBox(height: 20),
-                          SizedBox(height: 20),
-                          ElevatedButton(
-                            onPressed: _tutorAgregado
-                                ? null
-                                : () async {
-                                    // Desactiva el botón si ya se ha agregado un tutor
-                                    final tutorData =
-                                        await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              AddTutorScreen()),
-                                    );
+                            SizedBox(height: 20),
+                            _nombreTutor != null
+                                ? Text(
+                                    'Nombre del Tutor: $_nombreTutor',
+                                    style: TextStyle(fontSize: 16),
+                                  )
+                                : SizedBox(height: 20),
+                            SizedBox(height: 20),
+                            ElevatedButton(
+                              onPressed: _tutorAgregado
+                                  ? null
+                                  : () async {
+                                      // Desactiva el botón si ya se ha agregado un tutor
+                                      final tutorData =
+                                          await Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AddTutorScreen()),
+                                      );
 
-                                    if (tutorData != null) {
-                                      setState(() {
-                                        _tutorAgregado =
-                                            true; // Actualiza el estado del botón
-                                        _isTutorAdded = true;
-                                        _isTutorAdded = true;
-                                        _tutorController.text =
-                                            tutorData['id'].toString();
-                                        _nombreTutor = tutorData['nombre'];
-                                      });
-                                    }
-                                  },
-                            child: Text('Agregar Tutor'),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 16.0),
-                            child: ElevatedButton(
-                              onPressed: _isTutorAdded ? _agregarAlumno : null,
-                              // Deshabilitar el botón si no se ha agregado un tutor
-                              child: Text('Agregar Alumno'),
+                                      if (tutorData != null) {
+                                        setState(() {
+                                          _tutorAgregado =
+                                              true; // Actualiza el estado del botón
+                                          _isTutorAdded = true;
+                                          _isTutorAdded = true;
+                                          _tutorController.text =
+                                              tutorData['id'].toString();
+                                          _nombreTutor = tutorData['nombre'];
+                                        });
+                                      }
+                                    },
+                              child: Text('Agregar Tutor'),
                             ),
-                          ),
-                        ],
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 16.0),
+                              child: ElevatedButton(
+                                onPressed:
+                                    _isTutorAdded ? _agregarAlumno : null,
+                                // Deshabilitar el botón si no se ha agregado un tutor
+                                child: Text('Agregar Alumno'),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ]),

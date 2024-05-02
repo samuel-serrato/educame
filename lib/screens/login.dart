@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:educame/main.dart';
 import 'package:educame/screens/home.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -25,18 +26,43 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget content() {
     return Container(
-      color: Color(0xFF001D82),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color.fromARGB(255, 28, 100, 163), Color(0xFF181F4B)],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+      ),
       child: Center(
         child: Container(
           width: 500, // Ancho deseado del contenedor
-          height: 500, // Alto deseado del contenedor
+          height: 600, // Alto deseado del contenedor
           color: Colors.white, // Color blanco para el contenedor
           padding: EdgeInsets.all(20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              FlutterLogo(
-                size: 150,
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: SizedBox(
+                  width: 150, // Ancho deseado del botón
+                  height: 150, // Alto deseado del botón
+                  child: FloatingActionButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100)),
+                    backgroundColor: Colors.white,
+                    child: Image.asset(
+                      'assets/logo_soc.png', // Ruta de tu imagen
+                      width: 100, // Ancho de la imagen
+                      height: 100, // Alto de la imagen
+                      fit: BoxFit.cover, // Ajuste de la imagen
+                    ),
+                    onPressed: () {
+                      const String url = 'https://www.institutosocrates.mx';
+                      launchUrl(Uri.parse(url));
+                    },
+                  ),
+                ),
               ),
               SizedBox(height: 50),
               TextFormField(
@@ -90,6 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final String username = _usernameController.text;
     final String password = _passwordController.text;
 
+    // final url = Uri.parse('https://localhost:44364/api/usuarios');
     final url = Uri.parse('https://localhost:44364/api/usuarios');
     //final url = Uri.parse('http://192.168.1.190/API_MF/api/usuarios');
 

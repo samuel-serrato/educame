@@ -27,143 +27,194 @@ class _AddTutorScreenState extends State<AddTutorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Agregar Tutor'),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color.fromARGB(255, 28, 100, 163), Color(0xFF181F4B)],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+            ),
+          ),
+        ),
+        title: Text(
+          'Agregar Tutor',
+          style: TextStyle(color: Colors.white),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: content(),
     );
   }
 
   Widget content() {
-    return Container(
-      padding: EdgeInsets.all(20),
-      child: Form(
-        key: _formKey,
-        child: ListView(
-          children: <Widget>[
-            Text(
-              'Datos de Usuario',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            TextFormField(
-              controller: _usuarioController,
-              decoration: InputDecoration(labelText: 'Usuario'),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Por favor ingresa el usuario';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Contraseña'),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Por favor ingresa la contraseña';
-                }
-                return null;
-              },
-            ),
-            SizedBox(height: 50),
-            Text(
-              'Datos del Tutor',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            TextFormField(
-              controller: _nombreController,
-              decoration: InputDecoration(labelText: 'Nombre'),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Por favor ingresa el nombre';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: _apellidopController,
-              decoration: InputDecoration(labelText: 'Apellido Paterno'),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Por favor ingresa el apellido paterno';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: _apellidomController,
-              decoration: InputDecoration(labelText: 'Apellido Materno'),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Por favor ingresa el apellido materno';
-                }
-                return null;
-              },
-            ),
-            TextFormField(
-              controller: _ocupacionController,
-              decoration: InputDecoration(labelText: 'Ocupación'),
-            ),
-            TextFormField(
-              controller: _telefonoController,
-              decoration: InputDecoration(labelText: 'Teléfono'),
-            ),
-            TextFormField(
-              controller: _direccionController,
-              decoration: InputDecoration(labelText: 'Dirección'),
-            ),
-            TextFormField(
-              controller: _fechanacimientoController,
-              decoration: InputDecoration(labelText: 'Fecha de Nacimiento'),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Por favor ingresa la fecha de nacimiento';
-                }
-                return null;
-              },
-              onTap: () => _selectFechaNacimiento(context),
-            ),
-            DropdownButtonFormField<String>(
-              value:
-                  _sexoController.text.isNotEmpty ? _sexoController.text : '',
-              onChanged: (newValue) {
-                setState(() {
-                  _sexoController.text = newValue!;
-                });
-              },
-              items: [
-                DropdownMenuItem(
-                  value: '',
-                  child: Text('Selecciona una opción'),
-                ),
-                DropdownMenuItem(
-                  value: 'M',
-                  child: Text('Masculino'),
-                ),
-                DropdownMenuItem(
-                  value: 'F',
-                  child: Text('Femenino'),
-                ),
-              ],
-              decoration: InputDecoration(
-                labelText: 'Sexo',
+    return SingleChildScrollView(
+      child: Container(
+        color: Color(0xFFE5E5E5),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            color: Colors.white,
+          ),
+          margin: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+          padding: EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Datos de Usuario',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            TextFormField(
+                              controller: _usuarioController,
+                              decoration: InputDecoration(labelText: 'Usuario'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Por favor ingresa el usuario';
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _passwordController,
+                              decoration:
+                                  InputDecoration(labelText: 'Contraseña'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Por favor ingresa la contraseña';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 50),
+                            Text(
+                              'Datos del Tutor',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            TextFormField(
+                              controller: _nombreController,
+                              decoration: InputDecoration(labelText: 'Nombre'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Por favor ingresa el nombre';
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _apellidopController,
+                              decoration: InputDecoration(
+                                  labelText: 'Apellido Paterno'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Por favor ingresa el apellido paterno';
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _apellidomController,
+                              decoration: InputDecoration(
+                                  labelText: 'Apellido Materno'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Por favor ingresa el apellido materno';
+                                }
+                                return null;
+                              },
+                            ),
+                            TextFormField(
+                              controller: _ocupacionController,
+                              decoration:
+                                  InputDecoration(labelText: 'Ocupación'),
+                            ),
+                            TextFormField(
+                              controller: _telefonoController,
+                              decoration:
+                                  InputDecoration(labelText: 'Teléfono'),
+                            ),
+                            TextFormField(
+                              controller: _direccionController,
+                              decoration:
+                                  InputDecoration(labelText: 'Dirección'),
+                            ),
+                            TextFormField(
+                              controller: _fechanacimientoController,
+                              decoration: InputDecoration(
+                                  labelText: 'Fecha de Nacimiento'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Por favor ingresa la fecha de nacimiento';
+                                }
+                                return null;
+                              },
+                              onTap: () => _selectFechaNacimiento(context),
+                            ),
+                            DropdownButtonFormField<String>(
+                              value: _sexoController.text.isNotEmpty
+                                  ? _sexoController.text
+                                  : '',
+                              onChanged: (newValue) {
+                                setState(() {
+                                  _sexoController.text = newValue!;
+                                });
+                              },
+                              items: [
+                                DropdownMenuItem(
+                                  value: '',
+                                  child: Text('Selecciona una opción'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'M',
+                                  child: Text('Masculino'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'F',
+                                  child: Text('Femenino'),
+                                ),
+                              ],
+                              decoration: InputDecoration(
+                                labelText: 'Sexo',
+                              ),
+                              validator: (value) {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    value == 'Selecciona una opción') {
+                                  return 'Por favor selecciona una opción';
+                                }
+                                return null;
+                              },
+                            ),
+                            SizedBox(height: 20),
+                            ElevatedButton(
+                              onPressed: () {
+                                _submitForm();
+                              },
+                              child: Text('Agregar Tutor'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              validator: (value) {
-                if (value == null ||
-                    value.isEmpty ||
-                    value == 'Selecciona una opción') {
-                  return 'Por favor selecciona una opción';
-                }
-                return null;
-              },
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                _submitForm();
-              },
-              child: Text('Agregar Tutor'),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
