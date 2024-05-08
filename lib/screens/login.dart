@@ -1,8 +1,8 @@
 import 'dart:convert';
+import 'package:educame/screens/navigation_railCoordinacion.dart';
+import 'package:educame/screens/navigation_railTutor.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:educame/main.dart';
-import 'package:educame/screens/home.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,6 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String _errorMessage = '';
   bool _isLoading = false;
+  late int _userId; // Agregamos una variable para almacenar el ID del usuario
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ElevatedButton(
                 onPressed: _isLoading
                     ? null
-                    : _LoginScreen, // Deshabilita el botón mientras se está cargando
+                    : _login, // Deshabilita el botón mientras se está cargando
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: _isLoading
@@ -112,41 +113,91 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<void> _LoginScreen() async {
+  Future<void> _login() async {
     final String username = _usernameController.text;
     final String password = _passwordController.text;
 
-    // final url = Uri.parse('https://localhost:44364/api/usuarios');
-    final url = Uri.parse('https://localhost:44364/api/usuarios');
-    //final url = Uri.parse('http://192.168.1.190/API_MF/api/usuarios');
+    final usersUrl = Uri.parse('https://localhost:44364/api/usuarios');
+    //final userDataUrl = Uri.parse('https://localhost:44364/api/datosusuario');
+    final userTypeUrl = Uri.parse('https://localhost:44364/api/tipousuario');
 
     try {
       setState(() {
-        _isLoading = true; // Cambia el estado a "cargando"
+        _isLoading = true;
       });
 
-      final response = await http.get(url);
+      final usersResponse = await http.get(usersUrl);
+      //final userDataResponse = await http.get(userDataUrl);
+      final userTypeResponse = await http.get(userTypeUrl);
 
-      if (response.statusCode == 200) {
-        final List<dynamic> usuarios = jsonDecode(response.body);
+      if (usersResponse.statusCode == 200) {
+        final List<dynamic> usuarios = jsonDecode(usersResponse.body);
+
+        final List<dynamic> userTypes = jsonDecode(userTypeResponse.body);
 
         for (final usuario in usuarios) {
           final String usuarioNombre = usuario['USUARIO'];
           final String pass = usuario['PASSWORD'];
+          final int userId = usuario['ID_USUARIO'];
+          final String tipoUsuarioString = usuario['ID_TIPO_USUARIO'];
+          final int userTypeId = int.tryParse(tipoUsuarioString) ?? 0;
+
+          print('Tipo de usuario del usuario $usuarioNombre: $userTypeId');
 
           if (usuarioNombre == username && pass == password) {
-            final int userId =
-                usuario['ID_USUARIO']; // Obtenemos el ID_USUARIO del usuario
-
-            // Credenciales válidas, realizar la acción deseada
             await Future.delayed(Duration(seconds: 1));
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    HomePage(userId: userId), // Pasamos el ID_USUARIO
-              ),
-            );
+
+            // Almacenar el ID del usuario correspondiente
+            _userId = userId;
+
+            // Obteniendo el nombre del usuario según el tipo de usuario
+            String nombre = await _getUserName(userId, userTypeId);
+
+            // Buscar la descripción del tipo de usuario
+            //Buscar coincidencia en id
+            String userTypeDescription = '';
+            for (final userType in userTypes) {
+              final int typeId = userType['ID_TIPO_USUARIO'];
+              if (typeId == userTypeId) {
+                userTypeDescription = userType['DESCRIPCION'];
+                break;
+              }
+            }
+
+            /* // Buscar el nombre del usuario correspondiente al ID_USUARIO
+            String nombre = '';
+            for (final userDataItem in userData) {
+              if (userDataItem['ID_USUARIO'] == userId) {
+                nombre = userDataItem['NOMBRE'];
+                break;
+              }
+            } */
+
+            // Redirigir según el tipo de usuario
+            if (userTypeId == 1) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NavigationRailCScreen(
+                    tipoUsuario: userTypeDescription,
+                    idUsuario: _userId,
+                    nombreUsuario: nombre, // Pasa el nombre del usuario aquí
+                  ),
+                ),
+              );
+            } else if (userTypeId == 2) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NavigationRailTScreen(
+                    tipoUsuario: userTypeDescription,
+                    idUsuario: _userId,
+                    nombreUsuario: nombre, // Pasa el nombre del usuario aquí
+                  ),
+                ),
+              );
+            }
+
             setState(() {
               _errorMessage = 'Correcto';
             });
@@ -155,26 +206,63 @@ class _LoginScreenState extends State<LoginScreen> {
         }
 
         // Si no se encuentra un usuario con las credenciales proporcionadas
-        await Future.delayed(
-            Duration(seconds: 1)); // Agrega un retraso de 2 segundos
+        await Future.delayed(Duration(seconds: 1));
         setState(() {
           _errorMessage = 'Credenciales incorrectas';
         });
       } else {
-        // Si la solicitud a la API falla
         setState(() {
           _errorMessage = 'Error en la solicitud';
         });
       }
     } catch (e) {
-      // Error al realizar la solicitud HTTP
+      print('Error en la solicitud: $e');
       setState(() {
         _errorMessage = 'Error en la solicitud';
       });
     } finally {
       setState(() {
-        _isLoading = false; // Cambia el estado a "no cargando"
+        _isLoading = false;
       });
+    }
+  }
+
+  Future<String> _getUserName(int userId, int userTypeId) async {
+    String endpoint = '';
+    switch (userTypeId) {
+      case 1:
+        endpoint = 'https://localhost:44364/api/coordinacion';
+        break;
+      case 2:
+        endpoint = 'https://localhost:44364/api/tutores';
+        break;
+      case 3:
+        endpoint = 'https://localhost:44364/api/maestros';
+        break;
+      default:
+        // Agrega un manejo para otros tipos de usuario si es necesario
+        break;
+    }
+
+    final userDataUrl = Uri.parse('$endpoint/$userId');
+
+    try {
+      final userDataResponse = await http.get(userDataUrl);
+
+      print('Respuesta recibida: ${userDataResponse.statusCode}');
+      print('Cuerpo de la respuesta: ${userDataResponse.body}');
+
+      if (userDataResponse.statusCode == 200) {
+        final List<dynamic> userDataList = jsonDecode(userDataResponse.body);
+        if (userDataList.isNotEmpty) {
+          final userData = userDataList[0];
+          return userData['NOMBRE'];
+        }
+      }
+      return '';
+    } catch (e) {
+      print('Error al obtener el nombre del usuario: $e');
+      return '';
     }
   }
 }

@@ -1,20 +1,20 @@
 import 'dart:convert';
 
-import 'package:educame/screens/nalumno.dart';
-import 'package:educame/screens/nmaestro.dart';
+import 'package:educame/screens/coordinacion/nalumno.dart';
+import 'package:educame/screens/coordinacion/nmaestro.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class UsuariosScreen extends StatefulWidget {
+class UsuariosTutorScreen extends StatefulWidget {
   final int userId;
 
-  const UsuariosScreen({Key? key, required this.userId}) : super(key: key);
+  const UsuariosTutorScreen({Key? key, required this.userId}) : super(key: key);
 
   @override
-  _UsuariosScreenState createState() => _UsuariosScreenState();
+  _UsuariosTutorScreenState createState() => _UsuariosTutorScreenState();
 }
 
-class _UsuariosScreenState extends State<UsuariosScreen> {
+class _UsuariosTutorScreenState extends State<UsuariosTutorScreen> {
   String _selectedMenu = 'Alumnos';
   String nombreUsuario = ''; // Variable para almacenar el nombre del usuario
   bool isLoading = true;
@@ -363,7 +363,7 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                   ),
                 ],
               ),
-            ) ,
+            ),
             // Filtros
             if (_selectedMenu == 'Alumnos') ...[
               Container(
@@ -637,7 +637,7 @@ class FilterPill extends StatelessWidget {
 
 /* void main() {
   runApp(MaterialApp(
-    home: UsuariosScreen(username: 'example_username'),
+    home: UsuariosTutorScreen(username: 'example_username'),
   ));
 } */
 
@@ -751,9 +751,3 @@ class RoundedDropdownFormField extends StatelessWidget {
     );
   }
 }
-
-
-
-                 /*  Text('Fecha de Nacimiento: ${usuario.grado}'),
-                  Text('Sexo: ${usuario.grado}'),
-                  Text('Dirección: ${usuario.grado}'), */

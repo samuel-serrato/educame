@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(PerfilScreen());
+  runApp(PerfilCoordinacionScreen());
 }
 
-class PerfilScreen extends StatelessWidget {
+class PerfilCoordinacionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

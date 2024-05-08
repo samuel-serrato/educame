@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:educame/screens/nalumno.dart';
+import 'package:educame/screens/coordinacion/nalumno.dart';
 import 'package:flutter/material.dart';
 //import 'package:educame/screens/miCuenta.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
@@ -15,17 +15,22 @@ import 'package:url_launcher/url_launcher.dart';
 
 //import 'nexp_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeTutorScreen extends StatefulWidget {
   //String user;
-
+  final String nombre;
+  final String userType;
   final int userId; // Agregar esta línea
-  const HomeScreen({super.key, required this.userId});
+  const HomeTutorScreen(
+      {super.key,
+      required this.userId,
+      required this.userType,
+      required this.nombre});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeTutorScreen> createState() => _HomeTutorScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeTutorScreenState extends State<HomeTutorScreen> {
   String obtenerTipoUsuario(int userId) {
     for (Usuario usuario in listausuarios) {
       if (usuario.idUsuario.toString() == userId.toString()) {
@@ -51,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     obtenerusuarios();
     //userId = widget.userId;
+    nombreUsuario = widget.nombre;
   }
 
   @override
@@ -356,7 +362,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           const SizedBox(height: 16),
           const Text(
-            "Acciones Rapidas",
+            "Gestion de Alumnos",
             style: TextStyle(
               fontSize: 24,
               color: Color(0xFF444444),

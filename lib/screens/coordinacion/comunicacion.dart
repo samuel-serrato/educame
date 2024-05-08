@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
-class ComunicacionScreen extends StatefulWidget {
+class ComunicacionCoordinacionScreen extends StatefulWidget {
   final int userId;
 
-  const ComunicacionScreen({Key? key, required this.userId}) : super(key: key);
+  const ComunicacionCoordinacionScreen({Key? key, required this.userId}) : super(key: key);
 
   @override
-  _ComunicacionScreenState createState() => _ComunicacionScreenState();
+  _ComunicacionCoordinacionScreenState createState() => _ComunicacionCoordinacionScreenState();
 }
 
-class _ComunicacionScreenState extends State<ComunicacionScreen> {
+class _ComunicacionCoordinacionScreenState extends State<ComunicacionCoordinacionScreen> {
   String nombreUsuario = ''; // Variable para almacenar el nombre del usuario
   bool isLoading = true;
 
@@ -96,6 +96,12 @@ class _ComunicacionScreenState extends State<ComunicacionScreen> {
     super.initState();
     _fetchAlumnos();
     _fetchTutores();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -431,8 +437,8 @@ class _ComunicacionScreenState extends State<ComunicacionScreen> {
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.white,
               ),
-              child: const TextField(
-                // controller: ,
+              child: TextField(
+                //controller: _searchController,
                 decoration: InputDecoration(
                   fillColor: Colors.white,
                   filled: true,
@@ -460,158 +466,165 @@ class _ComunicacionScreenState extends State<ComunicacionScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return Dialog(
-          backgroundColor: Colors.white,
-          child: Container(
-            width: MediaQuery.of(context).size.width *
-                0.8, // Ancho del 80% de la pantalla
-            height: MediaQuery.of(context).size.height *
-                0.8, // Alto del 80% de la pantalla
-            padding: EdgeInsets.all(20), // Espacio alrededor del contenido
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    'Enviar Aviso Personal',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          return Dialog(
+            backgroundColor: Colors.white,
+            child: Container(
+              width: MediaQuery.of(context).size.width *
+                  0.8, // Ancho del 80% de la pantalla
+              height: MediaQuery.of(context).size.height *
+                  0.8, // Alto del 80% de la pantalla
+              padding: EdgeInsets.all(20), // Espacio alrededor del contenido
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'Enviar Aviso Personal',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-                //Filtros
-                Container(
-                  margin:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(0),
-                    color: Colors.white,
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                  child: Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment.spaceEvenly, // Ajustar el espaciado
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(2),
-                          child: RoundedDropdownFormField(
-                            borderColor: Color(0xFF181F4B),
-                            items: ['Todos', 'Secundaria', 'Preparatoria'],
-                            hintText: 'Sección',
-                            onChanged: (String? value) {
-                              setState(() {
-                                _filtroSeccion = value ?? 'Todos';
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 20),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(2),
-                          child: RoundedDropdownFormField(
-                            borderColor: Color(0xFF181F4B),
-                            items: ['Todos', '1', '2', '3'],
-                            hintText: 'Grado',
-                            onChanged: (String? value) {
-                              setState(() {
-                                _filtroGrado = value ?? 'Todos';
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Flexible(
-                  child: Container(
-                    margin: EdgeInsets.all(10.0),
-                    padding: EdgeInsets.all(10.0),
+                  //Filtros
+                  Container(
+                    margin:
+                        EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
                     decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(0),
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(10.0),
                     ),
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: _alumnos.length,
-                        itemBuilder: (context, index) {
-                          final reversedIndex = _alumnos.length - 1 - index;
-                          // Filtrar por sección y grado
-                          if ((_filtroSeccion == 'Todos' ||
-                                  _alumnos[reversedIndex].seccion ==
-                                      _filtroSeccion) &&
-                              (_filtroGrado == 'Todos' ||
-                                  _alumnos[reversedIndex].grado ==
-                                      _filtroGrado)) {
-                            return Container(
-                              margin: EdgeInsets.symmetric(vertical: 5),
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[200],
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: ListTile(
-                                onTap: () => (context, _alumnos[reversedIndex]),
-                                title: Text(
-                                  '${_alumnos[reversedIndex].nombre} ${_alumnos[reversedIndex].apellidop} ${_alumnos[reversedIndex].apellidom}',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                subtitle: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                        'Sección: ${_alumnos[reversedIndex].seccion}'),
-                                    Text(
-                                        'Grado: ${_alumnos[reversedIndex].grado}'),
-                                  ],
-                                ),
-                              ),
-                            );
-                          } else {
-                            // Si no coincide con los filtros, retornar un contenedor vacío
-                            return Container();
-                          }
-                        }),
+                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                    child: Row(
+                      mainAxisAlignment:
+                          MainAxisAlignment.spaceEvenly, // Ajustar el espaciado
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(2),
+                            child: RoundedDropdownFormField(
+                              borderColor: Color(0xFF181F4B),
+                              items: ['Todos', 'Secundaria', 'Preparatoria'],
+                              hintText: 'Sección',
+                              onChanged: (String? value) {
+                                setState(() {
+                                  _filtroSeccion = value ?? 'Todos';
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(2),
+                            child: RoundedDropdownFormField(
+                              borderColor: Color(0xFF181F4B),
+                              items: ['Todos', '1', '2', '3'],
+                              hintText: 'Grado',
+                              onChanged: (String? value) {
+                                setState(() {
+                                  _filtroGrado = value ?? 'Todos';
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                //Buscador
-                Container(
-                  margin:
-                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white,
+                  Flexible(
+                    child: Container(
+                      margin: EdgeInsets.all(10.0),
+                      padding: EdgeInsets.all(10.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: _alumnos.length,
+                          itemBuilder: (context, index) {
+                            final reversedIndex = _alumnos.length - 1 - index;
+                            // Filtrar por sección y grado
+                            if ((_filtroSeccion == 'Todos' ||
+                                    _alumnos[reversedIndex].seccion ==
+                                        _filtroSeccion) &&
+                                (_filtroGrado == 'Todos' ||
+                                    _alumnos[reversedIndex].grado ==
+                                        _filtroGrado)) {
+                              return Container(
+                                margin: EdgeInsets.symmetric(vertical: 5),
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: ListTile(
+                                  onTap: () =>
+                                      (context, _alumnos[reversedIndex]),
+                                  title: Text(
+                                    '${_alumnos[reversedIndex].nombre} ${_alumnos[reversedIndex].apellidop} ${_alumnos[reversedIndex].apellidom}',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  subtitle: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                          'Sección: ${_alumnos[reversedIndex].seccion}'),
+                                      Text(
+                                          'Grado: ${_alumnos[reversedIndex].grado}'),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            } else {
+                              // Si no coincide con los filtros, retornar un contenedor vacío
+                              return Container();
+                            }
+                          }),
+                    ),
                   ),
-                  child: TextField(
-                    // controller: ,
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      hintText: 'Buscar alumno',
-                      hintStyle: TextStyle(color: Colors.grey),
-                      suffixIcon: Icon(Icons.search, color: Colors.grey),
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.black,
-                          width: 2.0,
+                  //Buscador
+                  Container(
+                    margin:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                    ),
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        fillColor: Colors.white,
+                        filled: true,
+                        hintText: 'Buscar alumno',
+                        hintStyle: TextStyle(color: Colors.grey),
+                        suffixIcon: Icon(Icons.search, color: Colors.grey),
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.black,
+                            width: 2.0,
+                          ),
                         ),
                       ),
+                      onChanged: (value) {
+                        setState(() {
+                          searchAlumnos(value);
+                        });
+                      },
                     ),
-                    onChanged: (value) {
-                      searchAlumnos(value);
-                    },
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        );
+          );
+        });
       },
     );
   }
@@ -728,7 +741,7 @@ class Citas {
 
 /* void main() {
   runApp(MaterialApp(
-    home: ComunicacionScreen(username: 'example_username'),
+    home: ComunicacionCoordinacionScreen(username: 'example_username'),
   ));
 } */
 void _dialogAvisoGeneral(BuildContext context) {
@@ -879,9 +892,9 @@ class RoundedDropdownFormField extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
+        padding: EdgeInsets.symmetric(horizontal: 5),
         child: DropdownButtonFormField<String>(
-          iconSize: 20,
+          iconSize: 15,
           decoration: InputDecoration(
               border: InputBorder.none,
               hintText: hintText,
