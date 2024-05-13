@@ -7,13 +7,16 @@ import 'package:http/http.dart' as http;
 class ComunicacionCoordinacionScreen extends StatefulWidget {
   final int userId;
 
-  const ComunicacionCoordinacionScreen({Key? key, required this.userId}) : super(key: key);
+  const ComunicacionCoordinacionScreen({Key? key, required this.userId})
+      : super(key: key);
 
   @override
-  _ComunicacionCoordinacionScreenState createState() => _ComunicacionCoordinacionScreenState();
+  _ComunicacionCoordinacionScreenState createState() =>
+      _ComunicacionCoordinacionScreenState();
 }
 
-class _ComunicacionCoordinacionScreenState extends State<ComunicacionCoordinacionScreen> {
+class _ComunicacionCoordinacionScreenState
+    extends State<ComunicacionCoordinacionScreen> {
   String nombreUsuario = ''; // Variable para almacenar el nombre del usuario
   bool isLoading = true;
 
@@ -26,67 +29,40 @@ class _ComunicacionCoordinacionScreenState extends State<ComunicacionCoordinacio
 
   List<Alumno> _alumnos = []; // Lista vacía inicialmente
   List<Tutor> _tutores = []; // Lista vacía inicialmente
+  List<Coordinacion> _coordinacion = []; // Lista vacía inicialmente
+  List<Maestro> _maestros = []; // Lista vacía inicialmente
 
   String _selectedMenu = 'Avisos';
 
-  List<Aviso> _avisos = [
-    Aviso(
-      tipo: 'General',
-      descripcion: 'Recordatorio de reunión de padres de familia',
-      autor: 'Coordinación',
-      destinatario: 'Padres de familia',
-      fechaCreacion: '10/04/2024',
-    ),
-    Aviso(
-      tipo: 'Personal',
-      descripcion: 'Cambio de horario de clases el próximo viernes',
-      autor: 'Emiliano Cruz',
-      destinatario: 'Alumnos',
-      fechaCreacion: '08/04/2024',
-    ),
-    Aviso(
-      tipo: 'Personal',
-      descripcion: 'Cambio de horario de clases el próximo viernes',
-      autor: 'Emiliano Cruz',
-      destinatario: 'Alumnos',
-      fechaCreacion: '08/04/2024',
-    ),
-    Aviso(
-      tipo: 'Personal',
-      descripcion: 'Cambio de horario de clases el próximo viernes',
-      autor: 'Emiliano Cruz',
-      destinatario: 'Alumnos',
-      fechaCreacion: '08/04/2024',
-    ),
-  ];
+  List<Aviso> _avisos = [];
 
   List<Citas> _citas = [
     Citas(
       tipo: 'Personal',
       descripcion: 'Acordar pago',
-      autor: 'Coordinación',
-      destinatario: 'Daniel',
+      emisor: 'Coordinación',
+      receptor: 'Daniel',
       fechaCreacion: '10/04/2024',
     ),
     Citas(
       tipo: 'Personal',
       descripcion: 'Malas calificaciones',
-      autor: 'Emiliano Cruz',
-      destinatario: 'Alumnos',
+      emisor: 'Emiliano Cruz',
+      receptor: 'Alumnos',
       fechaCreacion: '08/04/2024',
     ),
     Citas(
       tipo: 'Personal',
       descripcion: 'Acordar pago',
-      autor: 'Coordinación',
-      destinatario: 'Daniel',
+      emisor: 'Coordinación',
+      receptor: 'Daniel',
       fechaCreacion: '10/04/2024',
     ),
     Citas(
       tipo: 'Personal',
       descripcion: 'Malas calificaciones',
-      autor: 'Emiliano Cruz',
-      destinatario: 'Alumnos',
+      emisor: 'Emiliano Cruz',
+      receptor: 'Alumnos',
       fechaCreacion: '08/04/2024',
     ),
   ];
@@ -96,6 +72,9 @@ class _ComunicacionCoordinacionScreenState extends State<ComunicacionCoordinacio
     super.initState();
     _fetchAlumnos();
     _fetchTutores();
+    _fetchAvisos();
+    _fetchCoordinacion();
+    _fetchMaestros();
   }
 
   @override
@@ -263,10 +242,10 @@ class _ComunicacionCoordinacionScreenState extends State<ComunicacionCoordinacio
                                   label: Text('Tipo',
                                       style: TextStyle(fontSize: 12))),
                               DataColumn(
-                                  label: Text('Detalles',
+                                  label: Text('Descripción',
                                       style: TextStyle(fontSize: 12))),
                               DataColumn(
-                                  label: Text('Autor',
+                                  label: Text('emisor',
                                       style: TextStyle(fontSize: 12))),
                               DataColumn(
                                   label: Text('Receptor',
@@ -278,13 +257,22 @@ class _ComunicacionCoordinacionScreenState extends State<ComunicacionCoordinacio
                             rows: _avisos
                                 .map(
                                   (aviso) => DataRow(cells: [
-                                    DataCell(Text(aviso.tipo,
+                                    DataCell(Text(
+                                        aviso.tipo == '1'
+                                            ? 'General'
+                                            : 'Personal',
                                         style: TextStyle(fontSize: 10))),
                                     DataCell(Text(aviso.descripcion,
                                         style: TextStyle(fontSize: 10))),
-                                    DataCell(Text(aviso.autor,
-                                        style: TextStyle(fontSize: 10))),
-                                    DataCell(Text(aviso.destinatario,
+                                    DataCell(Text(
+                                      getNombreUsuario(
+                                          aviso.emisor,
+                                          aviso.idMaestro,
+                                          _coordinacion,
+                                          _maestros),
+                                      style: TextStyle(fontSize: 10),
+                                    )),
+                                    DataCell(Text(aviso.receptor,
                                         style: TextStyle(fontSize: 10))),
                                     DataCell(Text(aviso.fechaCreacion,
                                         style: TextStyle(fontSize: 10))),
@@ -319,10 +307,10 @@ class _ComunicacionCoordinacionScreenState extends State<ComunicacionCoordinacio
                                   label: Text('Tipo',
                                       style: TextStyle(fontSize: 12))),
                               DataColumn(
-                                  label: Text('Detalles',
+                                  label: Text('Descripción',
                                       style: TextStyle(fontSize: 12))),
                               DataColumn(
-                                  label: Text('Autor',
+                                  label: Text('emisor',
                                       style: TextStyle(fontSize: 12))),
                               DataColumn(
                                   label: Text('Receptor',
@@ -338,9 +326,9 @@ class _ComunicacionCoordinacionScreenState extends State<ComunicacionCoordinacio
                                         style: TextStyle(fontSize: 10))),
                                     DataCell(Text(citas.descripcion,
                                         style: TextStyle(fontSize: 10))),
-                                    DataCell(Text(citas.autor,
+                                    DataCell(Text(citas.emisor,
                                         style: TextStyle(fontSize: 10))),
-                                    DataCell(Text(citas.destinatario,
+                                    DataCell(Text(citas.receptor,
                                         style: TextStyle(fontSize: 10))),
                                     DataCell(Text(citas.fechaCreacion,
                                         style: TextStyle(fontSize: 10))),
@@ -373,7 +361,7 @@ class _ComunicacionCoordinacionScreenState extends State<ComunicacionCoordinacio
                               ),
                             ),
                             onPressed: () {
-                              _dialogAvisoGeneral(context);
+                              // _dialogAvisoGeneral(context);
                             },
                             child: Text(
                               'Nuevo Aviso General',
@@ -394,7 +382,7 @@ class _ComunicacionCoordinacionScreenState extends State<ComunicacionCoordinacio
                               ),
                             ),
                             onPressed: () {
-                              _dialogAvisoPersonal(context);
+                              //_dialogAvisoPersonal(context);
                             },
                             child: Text(
                               'Nuevo Aviso Personal',
@@ -462,173 +450,6 @@ class _ComunicacionCoordinacionScreenState extends State<ComunicacionCoordinacio
     );
   }
 
-  void _dialogAvisoPersonal(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-          return Dialog(
-            backgroundColor: Colors.white,
-            child: Container(
-              width: MediaQuery.of(context).size.width *
-                  0.8, // Ancho del 80% de la pantalla
-              height: MediaQuery.of(context).size.height *
-                  0.8, // Alto del 80% de la pantalla
-              padding: EdgeInsets.all(20), // Espacio alrededor del contenido
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text(
-                      'Enviar Aviso Personal',
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  //Filtros
-                  Container(
-                    margin:
-                        EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(0),
-                      color: Colors.white,
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                    child: Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.spaceEvenly, // Ajustar el espaciado
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(2),
-                            child: RoundedDropdownFormField(
-                              borderColor: Color(0xFF181F4B),
-                              items: ['Todos', 'Secundaria', 'Preparatoria'],
-                              hintText: 'Sección',
-                              onChanged: (String? value) {
-                                setState(() {
-                                  _filtroSeccion = value ?? 'Todos';
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 20),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(2),
-                            child: RoundedDropdownFormField(
-                              borderColor: Color(0xFF181F4B),
-                              items: ['Todos', '1', '2', '3'],
-                              hintText: 'Grado',
-                              onChanged: (String? value) {
-                                setState(() {
-                                  _filtroGrado = value ?? 'Todos';
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Flexible(
-                    child: Container(
-                      margin: EdgeInsets.all(10.0),
-                      padding: EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: _alumnos.length,
-                          itemBuilder: (context, index) {
-                            final reversedIndex = _alumnos.length - 1 - index;
-                            // Filtrar por sección y grado
-                            if ((_filtroSeccion == 'Todos' ||
-                                    _alumnos[reversedIndex].seccion ==
-                                        _filtroSeccion) &&
-                                (_filtroGrado == 'Todos' ||
-                                    _alumnos[reversedIndex].grado ==
-                                        _filtroGrado)) {
-                              return Container(
-                                margin: EdgeInsets.symmetric(vertical: 5),
-                                padding: EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[200],
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: ListTile(
-                                  onTap: () =>
-                                      (context, _alumnos[reversedIndex]),
-                                  title: Text(
-                                    '${_alumnos[reversedIndex].nombre} ${_alumnos[reversedIndex].apellidop} ${_alumnos[reversedIndex].apellidom}',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  subtitle: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                          'Sección: ${_alumnos[reversedIndex].seccion}'),
-                                      Text(
-                                          'Grado: ${_alumnos[reversedIndex].grado}'),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            } else {
-                              // Si no coincide con los filtros, retornar un contenedor vacío
-                              return Container();
-                            }
-                          }),
-                    ),
-                  ),
-                  //Buscador
-                  Container(
-                    margin:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                    ),
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        filled: true,
-                        hintText: 'Buscar alumno',
-                        hintStyle: TextStyle(color: Colors.grey),
-                        suffixIcon: Icon(Icons.search, color: Colors.grey),
-                        border: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.black,
-                            width: 2.0,
-                          ),
-                        ),
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          searchAlumnos(value);
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-      },
-    );
-  }
-
   Future<void> _fetchAlumnos() async {
     try {
       final response =
@@ -689,6 +510,108 @@ class _ComunicacionCoordinacionScreenState extends State<ComunicacionCoordinacio
     }
   }
 
+  Future<void> _fetchAvisos() async {
+    try {
+      final response =
+          await http.get(Uri.parse('https://localhost:44364/api/avisos'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          _avisos = data
+              .map((item) => Aviso(
+                    tipo: item['ID_TIPO_AVISO'] ?? '',
+                    emisor: item['ID_EMISOR'] ?? '',
+                    receptor: item['ID_RECEPTOR'] ?? '',
+                    descripcion: item['DESCRIPCION'] ?? '',
+                    fechaCreacion: item['FECHA_CREACION']?.toString() ?? '',
+                    tipoUsuario: item['TIPO_USUARIO'] ?? '',
+                    idMaestro: item['ID_MAESTRO'] ?? '',
+                  ))
+              .toList();
+        });
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('Error: $error');
+      // Manejar el error como prefieras, por ejemplo, mostrar un mensaje al usuario
+    }
+  }
+
+  Future<void> _fetchCoordinacion() async {
+    try {
+      final response =
+          await http.get(Uri.parse('https://localhost:44364/api/coordinacion'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          _coordinacion = data
+              .map((item) => Coordinacion(
+                    idCoordinacion: item['ID_COORDINACION'],
+                    nombre: item['NOMBRE'],
+                    tipousuario: item['TIPO_USUARIO'],
+                    idUsuario: item['ID_USUARIO'],
+                  ))
+              .toList();
+        });
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('Error: $error');
+      // Manejar el error como prefieras, por ejemplo, mostrar un mensaje al usuario
+    }
+  }
+
+  Future<void> _fetchMaestros() async {
+    try {
+      final response =
+          await http.get(Uri.parse('https://localhost:44364/api/maestros'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          _maestros = data
+              .map((item) => Maestro(
+                  idMaestro: item['ID_MAESTRO'],
+                  idUsuario: item['ID_USUARIO'],
+                  nombre: item['NOMBRE'],
+                  sexo: item['SEXO'],
+                  seccion: item['SECCION'],
+                  fechaNacimiento: item['FECHA_NACIMIENTO'].toString(),
+                  tipoUsuario: item['TIPO_USUARIO']))
+              .toList();
+        });
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (error) {
+      print('Error: $error');
+      // Manejar el error como prefieras, por ejemplo, mostrar un mensaje al usuario
+    }
+  }
+
+  String getNombreUsuario(String idUsuario, String idMaestro,
+      List<Coordinacion> coordinadores, List<Maestro> maestros) {
+    // Si el idMaestro no está vacío, busca en la lista de maestros
+    if (idMaestro.isNotEmpty) {
+      for (var maestro in maestros) {
+        if (maestro.idMaestro.toString() == idMaestro) {
+          return 'Profesor: ${maestro.nombre}';
+        }
+      }
+    }
+
+    // Si no, busca en la lista de coordinadores
+    for (var coordinador in coordinadores) {
+      if (coordinador.idUsuario.toString() == idUsuario) {
+        return coordinador.nombre;
+      }
+    }
+
+    // Si no se encuentra el nombre, devuelve un valor predeterminado
+    return 'Usuario Desconocido';
+  }
+
   // Definición de la función searchAlumnos
   void searchAlumnos(String query) {
     setState(() {
@@ -709,114 +632,37 @@ class _ComunicacionCoordinacionScreenState extends State<ComunicacionCoordinacio
 
 class Aviso {
   final String tipo;
+  final String emisor;
+  final String receptor;
   final String descripcion;
-  final String autor;
-  final String destinatario;
   final String fechaCreacion;
+  final String tipoUsuario;
+  final String idMaestro;
 
-  Aviso({
-    required this.tipo,
-    required this.descripcion,
-    required this.autor,
-    required this.destinatario,
-    required this.fechaCreacion,
-  });
+  Aviso(
+      {required this.tipo,
+      required this.emisor,
+      required this.receptor,
+      required this.descripcion,
+      required this.fechaCreacion,
+      required this.tipoUsuario,
+      required this.idMaestro});
 }
 
 class Citas {
   final String tipo;
   final String descripcion;
-  final String autor;
-  final String destinatario;
+  final String emisor;
+  final String receptor;
   final String fechaCreacion;
 
   Citas({
     required this.tipo,
     required this.descripcion,
-    required this.autor,
-    required this.destinatario,
+    required this.emisor,
+    required this.receptor,
     required this.fechaCreacion,
   });
-}
-
-/* void main() {
-  runApp(MaterialApp(
-    home: ComunicacionCoordinacionScreen(username: 'example_username'),
-  ));
-} */
-void _dialogAvisoGeneral(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return Dialog(
-        backgroundColor: Colors.white,
-        child: Container(
-          width: MediaQuery.of(context).size.width *
-              0.8, // Ancho del 80% de la pantalla
-          height: MediaQuery.of(context).size.height *
-              0.5, // Ancho del 80% de la pantalla
-          padding: EdgeInsets.all(20), // Espacio alrededor del contenido
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    'Enviar Aviso General',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: TextField(
-                    style: TextStyle(fontSize: 14),
-                    decoration: InputDecoration(
-                      hintText: 'Escribe tu aviso aquí...',
-                      border: OutlineInputBorder(),
-                    ),
-                    maxLines: 8,
-                  ),
-                ),
-                SizedBox(height: 16.0),
-                ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        Color.fromARGB(255, 14, 47, 117)),
-                  ),
-                  onPressed: () {
-                    // Lógica para enviar el aviso general
-                  },
-                  child: Text(
-                    'Enviar Aviso General',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                SizedBox(height: 8.0),
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                      Color(0xFFB80000),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    'Cancelar',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    },
-  );
 }
 
 class Alumno {
@@ -869,45 +715,34 @@ class Tutor {
   });
 }
 
-class RoundedDropdownFormField extends StatelessWidget {
-  final List<String> items;
-  final String hintText;
-  final Color borderColor;
-  final Function(String?) onChanged;
+class Coordinacion {
+  final int idCoordinacion;
+  final String nombre;
+  final String tipousuario;
+  final int idUsuario;
 
-  RoundedDropdownFormField({
-    required this.items,
-    required this.hintText,
-    required this.borderColor,
-    required this.onChanged,
-  });
+  Coordinacion(
+      {required this.idCoordinacion,
+      required this.nombre,
+      required this.tipousuario,
+      required this.idUsuario});
+}
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(60.0),
-        border: Border.all(
-          color: borderColor,
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 5),
-        child: DropdownButtonFormField<String>(
-          iconSize: 15,
-          decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: hintText,
-              hintStyle: TextStyle(fontSize: 15)),
-          items: items.map((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-          onChanged: onChanged,
-        ),
-      ),
-    );
-  }
+class Maestro {
+  final int idMaestro;
+  final int idUsuario;
+  final String nombre;
+  final String sexo;
+  final String seccion;
+  final String fechaNacimiento;
+  final String tipoUsuario;
+
+  Maestro(
+      {required this.idMaestro,
+      required this.idUsuario,
+      required this.nombre,
+      required this.sexo,
+      required this.seccion,
+      required this.fechaNacimiento,
+      required this.tipoUsuario});
 }

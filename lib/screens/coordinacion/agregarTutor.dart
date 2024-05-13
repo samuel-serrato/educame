@@ -257,7 +257,7 @@ class _AddTutorScreenState extends State<AddTutorScreen> {
       final Map<String, dynamic> userData = {
         'USUARIO': _usuarioController.text,
         'PASSWORD': _passwordController.text,
-        'TIPO_USUARIO': 2,
+        'ID_TIPO_USUARIO': '2',
       };
 
       final response = await http.post(
@@ -295,7 +295,7 @@ class _AddTutorScreenState extends State<AddTutorScreen> {
       };
 
       final response = await http.post(
-        Uri.parse('https://localhost:44364/api/tutor'),
+        Uri.parse('https://localhost:44364/api/tutores'),
         body: json.encode(tutorData),
         headers: {'Content-Type': 'application/json'},
       );
@@ -305,8 +305,12 @@ class _AddTutorScreenState extends State<AddTutorScreen> {
         final tutorId = responseData['ID_TUTOR'];
         print('Tutor agregado exitosamente con ID: $tutorId');
         // Retornar el ID del tutor agregado y regresar a la pantalla anterior
-        Navigator.of(context)
-            .pop({'id': tutorId, 'nombre': _nombreController.text});
+        if (tutorId != null && tutorId is int) {
+          Navigator.of(context)
+              .pop({'id': tutorId, 'nombre': _nombreController.text});
+        } else {
+          print('Error al agregar tutor, tutorId no es válido.');
+        }
 
         print('Tutor agregado exitosamente');
       } else {

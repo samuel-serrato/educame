@@ -150,6 +150,10 @@ class _LoginScreenState extends State<LoginScreen> {
             // Almacenar el ID del usuario correspondiente
             _userId = userId;
 
+            // Aquí imprimimos el nombre de usuario devuelto por _getUserName()
+            String nombreUsuario = await _getUserName(userId, userTypeId);
+            print('Nombre de usuario obtenido: $nombreUsuario');
+
             // Obteniendo el nombre del usuario según el tipo de usuario
             String nombre = await _getUserName(userId, userTypeId);
 
@@ -175,6 +179,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
             // Redirigir según el tipo de usuario
             if (userTypeId == 1) {
+              print(
+                  'nombre de usuario actual: ${nombre}'); // Agregar este print
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -186,6 +192,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               );
             } else if (userTypeId == 2) {
+              print(
+                  'nombre de usuario actual: ${nombre}'); // Agregar este print
+
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -254,9 +263,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (userDataResponse.statusCode == 200) {
         final List<dynamic> userDataList = jsonDecode(userDataResponse.body);
-        if (userDataList.isNotEmpty) {
-          final userData = userDataList[0];
-          return userData['NOMBRE'];
+        for (final userData in userDataList) {
+          if (userData['ID_USUARIO'] == userId) {
+            return userData['NOMBRE'];
+          }
         }
       }
       return '';

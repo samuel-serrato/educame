@@ -1,7 +1,7 @@
 import 'package:educame/screens/tutor/comunicacion.dart';
 import 'package:educame/screens/tutor/homeTutor.dart';
 import 'package:educame/screens/tutor/perfil.dart';
-import 'package:educame/screens/tutor/usuarios.dart';
+import 'package:educame/screens/tutor/avisosTutor.dart';
 import 'package:flutter/material.dart';
 
 class NavigationRailTScreen extends StatefulWidget {
@@ -28,9 +28,11 @@ class _NavigationRailTScreenState extends State<NavigationRailTScreen> {
         userType: widget.tipoUsuario,
         nombre: widget
             .nombreUsuario /* nombre: widget.nombre, tipoUsuario: widget.tipoUsuario, idUsuario: widget.idUsuario, */),
-    UsuariosTutorScreen(
-        userId: widget
-            .idUsuario /* nombre: widget.nombre, tipoUsuario: widget.tipoUsuario, idUsuario: widget.idUsuario */),
+    AvisosTutorScreen(
+        userId: widget.idUsuario,
+        userType: widget.tipoUsuario,
+        nombre: widget
+            .nombreUsuario /* nombre: widget.nombre, tipoUsuario: widget.tipoUsuario, idUsuario: widget.idUsuario */),
     ComunicacionTutorScreen(
         userId: widget
             .idUsuario /* nombre: widget.nombre, tipoUsuario: widget.tipoUsuario */),
@@ -75,8 +77,8 @@ class _NavigationRailTScreenState extends State<NavigationRailTScreen> {
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.group),
-                  label: 'Usuarios',
+                  icon: Icon(Icons.notifications),
+                  label: 'Avisos',
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.chat_sharp),
@@ -99,11 +101,11 @@ class _NavigationRailTScreenState extends State<NavigationRailTScreen> {
                   minWidth: 100,
                   labelType: NavigationRailLabelType.all,
                   selectedLabelTextStyle: TextStyle(
-                      color: Color(0xFF181F4B), fontWeight: FontWeight.bold),
+                      color: Colors.white, fontWeight: FontWeight.bold),
                   unselectedLabelTextStyle: TextStyle(
                       color: Colors.grey[600], fontWeight: FontWeight.bold),
-                  backgroundColor: Colors.white,
-                  indicatorColor: Color(0xFF181F4B),
+                  backgroundColor: Color.fromARGB(255, 0, 18, 156),
+                  indicatorColor: Color.fromARGB(255, 46, 68, 216),
                   useIndicator: true,
                   selectedIndex: _selectedIndex,
                   onDestinationSelected: (int index) {
@@ -121,9 +123,10 @@ class _NavigationRailTScreenState extends State<NavigationRailTScreen> {
                       label: Text('Home'),
                     ),
                     NavigationRailDestination(
-                      icon: Icon(Icons.group, color: Colors.grey),
-                      selectedIcon: Icon(Icons.group, color: Colors.white),
-                      label: Text('Usuarios'),
+                      icon: Icon(Icons.notifications, color: Colors.grey),
+                      selectedIcon:
+                          Icon(Icons.notifications, color: Colors.white),
+                      label: Text('Avisos'),
                     ),
                     NavigationRailDestination(
                       icon: Icon(Icons.chat_sharp, color: Colors.grey),

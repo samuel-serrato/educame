@@ -99,11 +99,11 @@ class _NavigationRailCScreenState extends State<NavigationRailCScreen> {
                   minWidth: 100,
                   labelType: NavigationRailLabelType.all,
                   selectedLabelTextStyle: TextStyle(
-                      color: Color(0xFF181F4B), fontWeight: FontWeight.bold),
+                      color: Colors.white, fontWeight: FontWeight.bold),
                   unselectedLabelTextStyle: TextStyle(
                       color: Colors.grey[600], fontWeight: FontWeight.bold),
-                  backgroundColor: Colors.white,
-                  indicatorColor: Color(0xFF181F4B),
+                  backgroundColor: Color(0xFF181F4B),
+                  indicatorColor: Color.fromARGB(255, 46, 68, 216),
                   useIndicator: true,
                   selectedIndex: _selectedIndex,
                   onDestinationSelected: (int index) {
